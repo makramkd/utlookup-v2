@@ -1,7 +1,31 @@
+# always ignore iml files
+*.iml
+
+# we are using gradle always
 .gradle
+
+# ide properties 
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
+
+# OSX files 
 .DS_Store
+
+# binary/dex/whatever 
 /build
 /captures
+
+# generated files
+bin/
+gen/
+
+# class files
+*.class
+
+# dex files
+*.dex
+
+# built application files
+*.apk
+*.ap_
