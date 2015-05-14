@@ -3,4 +3,10 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string name="pick_campus">Pick your campus:</string>
+    <string name="st_george">U of T St. George</string>
+    <string name="sauga">UTM</string>
+    <string name="scarborough">UTSC</string>
+
 </resources>
