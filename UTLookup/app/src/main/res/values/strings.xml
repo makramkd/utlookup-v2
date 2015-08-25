@@ -10,5 +10,13 @@
     <string name="scarborough">UTSC</string>
     <string name="title_activity_search_courses">Search</string>
     <string name="title_activity_view_course">Course Details</string>
-
+    <string name="searchText">Search</string>
+    <string name="searchHint">Course name or code</string>
+    <string name="courseCodePlaceholder">CourseCode</string>
+    <string name="courseNamePlaceholder">CourseName</string>
+    <string name="description">Description</string>
+    <string name="prerequisites">Prerequisites</string>
+    <string name="corequisites">Corequisites</string>
+    <string name="drbr">DR/BR</string>
+    <string name="courseDescriptionPlaceholder">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in consequat justo. Aenean at massa vestibulum, volutpat ipsum ac, posuere nibh. Nulla eu orci in justo mollis condimentum. Vestibulum augue nibh, mollis.</string>
 </resources>
