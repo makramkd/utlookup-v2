@@ -3,7 +3,7 @@ package org.lag.utlookup;
 import android.app.Activity;
 import android.os.Bundle;
 
-public class MainActivity extends Activity {
+public class ChooseCampusActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

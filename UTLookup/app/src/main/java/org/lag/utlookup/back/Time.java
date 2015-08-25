@@ -1,4 +1,4 @@
-package org.lag.utlookup;
+package org.lag.utlookup.back;
 
 /**
  * A class to represent times at which meeting sections are taking place for 

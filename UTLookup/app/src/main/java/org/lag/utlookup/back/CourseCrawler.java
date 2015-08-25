@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.lag.utlookup;
+package org.lag.utlookup.back;
 
 import java.util.List;
 
