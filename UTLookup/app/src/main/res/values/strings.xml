@@ -4,12 +4,14 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
-    <string name="pick_campus">Pick your campus:</string>
-    <string name="st_george">U of T St. George</string>
+    <string name="pickCampus">Pick your campus:</string>
+    <string name="stGeorge">U of T St. George</string>
     <string name="sauga">UTM</string>
     <string name="scarborough">UTSC</string>
+
     <string name="title_activity_search_courses">Search</string>
     <string name="title_activity_view_course">Course Details</string>
+
     <string name="searchText">Search</string>
     <string name="searchHint">Course name or code</string>
     <string name="courseCodePlaceholder">CourseCode</string>
@@ -17,6 +19,8 @@
     <string name="description">Description</string>
     <string name="prerequisites">Prerequisites</string>
     <string name="corequisites">Corequisites</string>
+    <string name="exclusions">Exclusions</string>
     <string name="drbr">DR/BR</string>
+    <string name="sectionCodes">Section Code</string>
     <string name="courseDescriptionPlaceholder">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in consequat justo. Aenean at massa vestibulum, volutpat ipsum ac, posuere nibh. Nulla eu orci in justo mollis condimentum. Vestibulum augue nibh, mollis.</string>
 </resources>

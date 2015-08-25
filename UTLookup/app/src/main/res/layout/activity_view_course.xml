@@ -21,13 +21,11 @@
 
     <TextView
         style="@style/Subtitle"
-        android:text="@string/description"
-         />
+        android:text="@string/description" />
 
     <TextView
         android:id="@+id/courseDescriptionTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/TextBox"
         android:text="@string/courseDescriptionPlaceholder"/>
 
     <TextView
@@ -36,8 +34,7 @@
 
     <TextView
         android:id="@+id/prerequisitesTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/TextBox"
         android:text="@string/prerequisites"/>
 
     <TextView
@@ -47,6 +44,23 @@
     <TextView
         android:id="@+id/corequisites"
         android:text="@string/corequisites"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        style="@style/TextBox" />
+
+    <TextView
+        style="@style/Subtitle"
+        android:text="@string/drbr"/>
+
+    <TextView
+        android:id="@+id/drbrTextView"
+        android:text="@string/drbr"
+        style="@style/TextBox" />
+
+    <TextView
+        style="@style/Subtitle"
+        android:text="@string/exclusions"/>
+
+    <TextView
+        android:id="@+id/exclusionsTextView"
+        android:text="@string/exclusions"
+        style="@style/TextBox" />
 </LinearLayout>
