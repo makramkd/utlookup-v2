@@ -8,5 +8,7 @@
     <string name="st_george">U of T St. George</string>
     <string name="sauga">UTM</string>
     <string name="scarborough">UTSC</string>
+    <string name="title_activity_search_courses">Search</string>
+    <string name="title_activity_view_course">Course Details</string>
 
 </resources>
