@@ -5,4 +5,19 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="Title">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="Subtitle" parent="Title">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Supertitle" parent="Title">
+        <item name="android:textSize">40sp</item>
+    </style>
+
 </resources>
