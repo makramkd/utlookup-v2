@@ -116,31 +116,72 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return -1; // stub
     }
 
-    public int deleteCourse(String courseCode) {
+    /**
+     * Delete the course with the given courseCode from the course table.
+     * @param courseCode the course code of the course tuple to delete.
+     * @return the number of rows deleted (should be 1 or 0)
+     */
+    public int deleteCourse(@NonNull String courseCode) {
         return -1; // stub
     }
 
-    public int deleteOffer(String deptCode, String courseCode) {
+    /**
+     * Delete the offer with the given deptCode and courseCode from the offers table.
+     * @param deptCode the deptCode of the course offering
+     * @param courseCode the course code of the offering
+     * @return the number of rows deleted (should be 1 or 0)
+     */
+    public int deleteOffer(@NonNull String deptCode, @NonNull String courseCode) {
         return -1; // stub
     }
 
-    public int deleteMeetingSection(String courseCode, String sectionCode) {
+    /**
+     * Delete a meeting section from the meetingsection table.
+     * @param courseCode
+     * @param sectionCode
+     * @return the number of rows deleted (should be 1 or 0)
+     */
+    public int deleteMeetingSection(@NonNull String courseCode, @NonNull String sectionCode) {
         return -1; // stub
     }
 
-    public int deleteTeaches(long profid, String courseCode, String sectionCode) {
+    /**
+     * Delete a teaches tuple from the teaches table.
+     * @param profid the id of the professor who teaches the course
+     * @param courseCode the course code of the course
+     * @param sectionCode the section code of the course
+     * @return the number of rows deleted (should be 1 or 0)
+     */
+    public int deleteTeaches(long profid, @NonNull String courseCode,
+                             @NonNull String sectionCode) {
         return -1; // stub
     }
 
-    public int deleteDepartment(String deptCode) {
+    /**
+     * Delete a department from the department table.
+     * @param deptCode the department code of the department to be deleted.
+     * @return the number of rows deleted (should be 1 or 0)
+     */
+    public int deleteDepartment(@NonNull String deptCode) {
         return -1; // stub
     }
 
+    /**
+     * Delete an instructor from the instructor table.
+     * @param profId the id of the prof being deleted.
+     * @return the number of rows deleted (should be 1 or 0)
+     */
     public int deleteInstructor(long profId) {
         return -1; // stub
     }
 
-    public int deleteDeptHead(String deptCode, long profId) {
+    /**
+     * Delete a department head from the depthead table.
+     * @param deptCode the department code the head belongs to
+     * @param profId the id of the head as found in the instructor table.
+     * @return the number of rows deleted (should be 1 or 0)
+     */
+    public int deleteDeptHead(@NonNull String deptCode, long profId) {
         return -1; // stub
     }
 }
