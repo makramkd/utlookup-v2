@@ -36,17 +36,17 @@ public class CourseDataStore {
 		codeToCourseMap.put(course.courseCode, new Course(course.courseCode, course.courseName));
 	}
         
-        public void addAll(Collection<Course> courses) {
-            for (Course c : courses) 
-            {
-                codeToNameMap.put(c.courseCode, c.courseName);
-                courseCodes.add(c.courseCode);
-                courseNames.add(c.courseName);
-                codeToCourseMap.put(c.courseCode, new Course(
-                        c.courseCode, c.courseName));
-                this.courses.add(new Course(c.courseCode, c.courseName));
-            }
-        }
+	public void addAll(Collection<Course> courses) {
+		for (Course c : courses)
+		{
+			codeToNameMap.put(c.courseCode, c.courseName);
+			courseCodes.add(c.courseCode);
+			courseNames.add(c.courseName);
+			codeToCourseMap.put(c.courseCode, new Course(
+					c.courseCode, c.courseName));
+			this.courses.add(new Course(c.courseCode, c.courseName));
+		}
+	}
 	
 	public Course get(String courseCode) {
 		return codeToCourseMap.get(courseCode);
