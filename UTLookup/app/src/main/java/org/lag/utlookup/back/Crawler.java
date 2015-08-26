@@ -18,7 +18,7 @@ public abstract class Crawler {
 	 * This is the link to the new course finder which is a utility that can be used to search for course 
 	 * metadata and availability information (there is no timetable information here).
 	 * 
-	 * @deprecated this URL is actually useless. Use either {@link StGeorgeCrawler#TIMETABLE_URL_FW} or {@link #CALENDAR_URL} for St. George.
+	 * @deprecated this URL is actually useless. Use either {@link StGeorgeCrawler#TIMETABLE_URL_FW} or {@link StGeorgeCrawler#CALENDAR_URL} for St. George.
 	 */
 	@Deprecated
 	public static final String COURSE_FINDER_URL = "http://coursefinder.utoronto.ca/course-search/search/courseSearch?viewId=CourseSearch-FormView&methodToCall=start"; // will redirect to a more specific url
