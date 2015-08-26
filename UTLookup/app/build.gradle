@@ -24,4 +24,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile files('libs/jsoup-1.8.3-javadoc.jar')
     compile files('libs/jsoup-1.8.3.jar')
+    compile 'com.android.support:support-annotations:23.0.0'
 }
