@@ -19,6 +19,25 @@ public final class DatabaseContract {
     private static final String NOT_NULL = " not null";
     private static final String ON_CONFLICT_REPLACE = " on conflict replace";
 
+    public static final String[] CREATE_TABLE_ARRAY = {
+            Course.CREATE_TABLE,
+            Offers.CREATE_TABLE,
+            Department.CREATE_TABLE,
+            Instructor.CREATE_TABLE,
+            DeptHead.CREATE_TABLE,
+            MeetingSection.CREATE_TABLE,
+            Teaches.CREATE_TABLE
+    };
+
+    public static final String[] DROP_TABLE_ARRAY = {
+            Course.DELETE_TABLE,
+            Offers.DELETE_TABLE,
+            Department.DELETE_TABLE,
+            Instructor.DELETE_TABLE,
+            DeptHead.DELETE_TABLE,
+            MeetingSection.DELETE_TABLE,
+            Teaches.DELETE_TABLE
+    };
 
     // empty ctor to prevent accidental instantiation
     private DatabaseContract() {}
