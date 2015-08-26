@@ -23,4 +23,5 @@
     <string name="drbr">DR/BR</string>
     <string name="sectionCodes">Section Code</string>
     <string name="courseDescriptionPlaceholder">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in consequat justo. Aenean at massa vestibulum, volutpat ipsum ac, posuere nibh. Nulla eu orci in justo mollis condimentum. Vestibulum augue nibh, mollis.</string>
+    <string name="title_activity_search_results">Search Results</string>
 </resources>
