@@ -7,18 +7,13 @@
     android:paddingRight="16dip">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/TextViewSupertitle"
         android:gravity="center"
-        android:text="@string/app_name"
-        android:textSize="32sp"
-        />
+        android:text="@string/app_name" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="@string/pickCampus"
-        android:textStyle="italic"
+        style="@style/TextViewSubtitle"
         />
 
     <CheckBox

@@ -5,27 +5,32 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="BaseStyle">
+    <style name="MatchWidthWrapHeight">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="Title" parent="BaseStyle">
+    <style name="TextViewTitle" parent="MatchWidthWrapHeight">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">30sp</item>
     </style>
 
-    <style name="Subtitle" parent="Title">
+    <style name="TextViewOtherTitle" parent="MatchWidthWrapHeight">
+        <item name="android:textSize">25sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="TextViewSubtitle" parent="TextViewTitle">
         <item name="android:textSize">25sp</item>
         <item name="android:paddingTop">5dip</item>
         <item name="android:paddingBottom">5dip</item>
     </style>
 
-    <style name="Supertitle" parent="Title">
+    <style name="TextViewSupertitle" parent="TextViewTitle">
         <item name="android:textSize">40sp</item>
     </style>
 
-    <style name="TextBox" parent="BaseStyle">
+    <style name="TextViewBoxText" parent="MatchWidthWrapHeight">
         <item name="android:textSize">16sp</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>

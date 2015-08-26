@@ -7,19 +7,12 @@
     android:paddingRight="16dip">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/MatchWidthWrapHeight"
         android:text="@string/searchText"
         android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/MatchWidthWrapHeight"
         android:id="@+id/searchEditText"
         android:hint="@string/searchHint"/>
-
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/courseListView"/>
 </LinearLayout>

@@ -7,60 +7,57 @@
     android:paddingRight="16dip">
 
     <TextView
-        style="@style/Supertitle"
+        style="@style/TextViewSupertitle"
         android:id="@+id/courseCodeTextView"
         android:text="@string/courseCodePlaceholder" />
 
     <TextView
         android:id="@+id/courseNameTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/courseNamePlaceholder"
-        android:textSize="25sp"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        style="@style/TextViewOtherTitle"
+        android:text="@string/courseNamePlaceholder" />
 
     <TextView
-        style="@style/Subtitle"
+        style="@style/TextViewSubtitle"
         android:text="@string/description" />
 
     <TextView
         android:id="@+id/courseDescriptionTextView"
-        style="@style/TextBox"
+        style="@style/TextViewBoxText"
         android:text="@string/courseDescriptionPlaceholder"/>
 
     <TextView
         android:text="@string/prerequisites"
-        style="@style/Subtitle" />
+        style="@style/TextViewSubtitle" />
 
     <TextView
         android:id="@+id/prerequisitesTextView"
-        style="@style/TextBox"
+        style="@style/TextViewBoxText"
         android:text="@string/prerequisites"/>
 
     <TextView
         android:text="@string/corequisites"
-        style="@style/Subtitle" />
+        style="@style/TextViewSubtitle" />
 
     <TextView
-        android:id="@+id/corequisites"
+        android:id="@+id/corequisitesTextView"
         android:text="@string/corequisites"
-        style="@style/TextBox" />
+        style="@style/TextViewBoxText" />
 
     <TextView
-        style="@style/Subtitle"
+        style="@style/TextViewSubtitle"
         android:text="@string/drbr"/>
 
     <TextView
         android:id="@+id/drbrTextView"
         android:text="@string/drbr"
-        style="@style/TextBox" />
+        style="@style/TextViewBoxText" />
 
     <TextView
-        style="@style/Subtitle"
+        style="@style/TextViewSubtitle"
         android:text="@string/exclusions"/>
 
     <TextView
         android:id="@+id/exclusionsTextView"
         android:text="@string/exclusions"
-        style="@style/TextBox" />
+        style="@style/TextViewBoxText" />
 </LinearLayout>
