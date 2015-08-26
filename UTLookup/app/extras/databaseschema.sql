@@ -11,7 +11,7 @@ create table course(
     prereqs text,
     coreqs text,
     exclusions text,
-    description text,
+    description text not null,
     brdr text,
     recPrep text
 );
@@ -43,7 +43,8 @@ create table depthead(
     deptCode text not null,
     profId integer not null,
     unique(deptCode, profId) on conflict replace,
-    foreign key(profId) references instructor(_id)
+    foreign key(profId) references instructor(_id),
+    foreign key(deptCode) references department(code)
 );
 
 create table meetingsection(
@@ -58,8 +59,9 @@ create table meetingsection(
 
 create table teaches(
     _id integer primary key,
-    profId text not null,
+    profId integer not null,
     courseCode text not null,
     sectionCode text not null,
-    unique(profId, courseCode, sectionCode) on conflict replace
+    unique(profId, courseCode, sectionCode) on conflict replace,
+    foreign key(courseCode, sectionCode) references meetingsection(courseCode, sectionCode)
 );
