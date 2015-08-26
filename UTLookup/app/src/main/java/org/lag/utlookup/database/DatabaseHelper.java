@@ -116,5 +116,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return -1; // stub
     }
 
+    public int deleteCourse(String courseCode) {
+        return -1; // stub
+    }
 
+    public int deleteOffer(String deptCode, String courseCode) {
+        return -1; // stub
+    }
+
+    public int deleteMeetingSection(String courseCode, String sectionCode) {
+        return -1; // stub
+    }
+
+    public int deleteTeaches(long profid, String courseCode, String sectionCode) {
+        return -1; // stub
+    }
+
+    public int deleteDepartment(String deptCode) {
+        return -1; // stub
+    }
+
+    public int deleteInstructor(long profId) {
+        return -1; // stub
+    }
+
+    public int deleteDeptHead(String deptCode, long profId) {
+        return -1; // stub
+    }
 }
