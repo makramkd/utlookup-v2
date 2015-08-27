@@ -257,7 +257,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return the number of rows deleted (should be 1 or 0)
      */
     public int deleteCourse(@NonNull String courseCode) {
-        return -1; // stub
+        SQLiteDatabase db = getWritableDatabase();
+
+        int count = db.delete(DatabaseContract.Course.TABLE_NAME,
+                DatabaseContract.Course.CODE_COL1 + " = ?", new String[]{courseCode});
+
+        db.close();
+
+        return count;
     }
 
     /**
@@ -267,7 +274,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return the number of rows deleted (should be 1 or 0)
      */
     public int deleteOffer(@NonNull String deptCode, @NonNull String courseCode) {
-        return -1; // stub
+        SQLiteDatabase db = getWritableDatabase();
+
+        int count = db.delete(DatabaseContract.Offers.TABLE_NAME,
+                DatabaseContract.Offers.DEPTCODE_COL1 + " = ? and " +
+                DatabaseContract.Offers.COURSECODE_COL2 + " = ?",
+                new String[]{deptCode, courseCode});
+
+        db.close();
+
+        return count;
     }
 
     /**
@@ -277,7 +293,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return the number of rows deleted (should be 1 or 0)
      */
     public int deleteMeetingSection(@NonNull String courseCode, @NonNull String sectionCode) {
-        return -1; // stub
+        SQLiteDatabase db = getWritableDatabase();
+
+        int count = db.delete(DatabaseContract.MeetingSection.TABLE_NAME,
+                DatabaseContract.MeetingSection.COURSECODE_COL1 + " = ? and " +
+                DatabaseContract.MeetingSection.SECTIONCODE_COL2 + " = ?",
+                new String[]{courseCode, sectionCode});
+
+        db.close();
+
+        return count;
     }
 
     /**
@@ -289,7 +314,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public int deleteTeaches(long profid, @NonNull String courseCode,
                              @NonNull String sectionCode) {
-        return -1; // stub
+        SQLiteDatabase db = getWritableDatabase();
+
+        int count = db.delete(DatabaseContract.Teaches.TABLE_NAME,
+                DatabaseContract.Teaches.PROFID_COL1 + " = ? and " +
+                        DatabaseContract.Teaches.COURSECODE_COL2 + " = ? and " +
+                DatabaseContract.Teaches.SECTIONCODE_COL3 + " = ?",
+                new String[]{Long.toString(profid), courseCode, sectionCode});
+
+        db.close();
+
+        return count;
     }
 
     /**
@@ -298,7 +333,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return the number of rows deleted (should be 1 or 0)
      */
     public int deleteDepartment(@NonNull String deptCode) {
-        return -1; // stub
+        SQLiteDatabase db = getWritableDatabase();
+
+        int count = db.delete(DatabaseContract.Department.TABLE_NAME,
+                DatabaseContract.Department.DEPTCODE_COL1 + " = ?", new String[]{deptCode});
+
+        db.close();
+
+        return count;
     }
 
     /**
@@ -307,7 +349,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return the number of rows deleted (should be 1 or 0)
      */
     public int deleteInstructor(long profId) {
-        return -1; // stub
+        SQLiteDatabase db = getWritableDatabase();
+
+        int count = db.delete(DatabaseContract.Instructor.TABLE_NAME,
+                DatabaseContract.Instructor._ID + " = ?", new String[]{Long.toString(profId)});
+
+        db.close();
+
+        return count;
     }
 
     /**
@@ -317,6 +366,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return the number of rows deleted (should be 1 or 0)
      */
     public int deleteDeptHead(@NonNull String deptCode, long profId) {
-        return -1; // stub
+        SQLiteDatabase db = getWritableDatabase();
+
+        int count = db.delete(DatabaseContract.DeptHead.TABLE_NAME,
+                DatabaseContract.DeptHead.DEPTCODE_COL1 + " = ? and " +
+                DatabaseContract.DeptHead.PROFID_COL2 + " = ?",
+                new String[]{deptCode, Long.toString(profId)});
+
+        db.close();
+
+        return count;
     }
 }
