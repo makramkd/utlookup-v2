@@ -9,6 +9,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.lag.utlookup.interfaces.CourseCrawler;
+import org.lag.utlookup.interfaces.Crawler;
 
 public class StGeorgeCrawler extends Crawler implements CourseCrawler {
     
