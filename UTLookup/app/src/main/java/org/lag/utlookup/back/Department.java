@@ -12,18 +12,18 @@ public class Department {
      * when we extract department info from the database, we can store it here.
      * We probably won't show this id to the user.
      */
-    private int id;
+    public int id;
 
     /**
      * The name of the department, for example "Mathematics" or "Computer Science".
      */
-    private String name;
+    public String name;
 
     /**
      * The code of the department. This is the prefix for the courses offered by them,
      * for example, "CSC" or "MAT".
      */
-    private String code;
+    public String code;
 
     public Department() {
 
