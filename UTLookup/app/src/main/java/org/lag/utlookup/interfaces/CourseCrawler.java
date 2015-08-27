@@ -14,7 +14,7 @@ import java.util.List;
  * An interface that attempts to unite all the course crawlers for different
  * campuses so to be as general as possible. 
  */
-interface CourseCrawler {
+public interface CourseCrawler {
     /**
      * Get a list of links to the courses offered by each department from the 
      * campus's timetable. This requires scraping the timetable, not the calendar.
