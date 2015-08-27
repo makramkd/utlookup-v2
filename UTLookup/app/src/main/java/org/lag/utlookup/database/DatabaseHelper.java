@@ -109,24 +109,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Insert a course offering into the offers table.
+     * Insert a course offering into the offers table. Notice that the course and department
+     * tables must be filled up before you do this or you will get a foreign key error.
      * @param deptCode the code of the department offering the course (e.g "CSC"). Cannot be null.
      * @param courseCode the code of the course being offered by the department (e.g "CSC301").
      *                   Cannot be null.
      * @return the rowid of the inserted row.
      */
     public long insertOffering(@NonNull String deptCode, @NonNull String courseCode) {
-        return -1;
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.Offers.DEPTCODE_COL1, deptCode);
+        values.put(DatabaseContract.Offers.COURSECODE_COL2, courseCode);
+
+        long rowid = db.insert(DatabaseContract.Offers.TABLE_NAME,
+                null, values);
+
+        db.close();
+
+        return rowid;
     }
 
     /**
-     * Insert an instructor into the instructor table.
+     * Insert an instructor into the instructor table. We need to fill up the departments table
+     * to do this because of the foreign key constraint on deptCode.
      * @param name the name of the instructor. Cannot be null.
      * @param deptCode the department he belongs to. Cannot be null.
      * @return the rowid of the inserted row.
      */
     public long insertInstructor(@NonNull String name, @NonNull String deptCode) {
-        return -1; // stub
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.Instructor.NAME_COL1, name);
+        values.put(DatabaseContract.Instructor.DEPTCODE_COL2, deptCode);
+
+        long rowid = db.insert(DatabaseContract.Instructor.TABLE_NAME,
+                null, values);
+
+        db.close();
+
+        return rowid;
     }
 
     /**
@@ -137,7 +161,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return the rowid of the inserted row.
      */
     public long insertDeptHead(@NonNull String deptCode, @NonNull long profId) {
-        return -1; // stub
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.DeptHead.DEPTCODE_COL1, deptCode);
+        values.put(DatabaseContract.DeptHead.PROFID_COL2, profId);
+
+        long rowid = db.insert(DatabaseContract.DeptHead.TABLE_NAME,
+                null, values);
+
+        db.close();
+
+        return rowid;
     }
 
     /**
@@ -147,7 +182,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return the rowid of the inserted row.
      */
     public long insertDepartment(@NonNull String deptCode, @NonNull String deptName) {
-        return -1; // stub
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.Department.DEPTCODE_COL1, deptCode);
+        values.put(DatabaseContract.Department.DEPTNAME_COL2, deptName);
+
+        long rowid = db.insert(DatabaseContract.Department.TABLE_NAME,
+                null, values);
+
+        db.close();
+
+        return rowid;
     }
 
     /**
@@ -160,7 +206,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public long insertTeaches(@NonNull long profId, @NonNull String courseCode,
                               @NonNull String sectionCode) {
-        return -1; // stub
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.Teaches.PROFID_COL1, profId);
+        values.put(DatabaseContract.Teaches.COURSECODE_COL2, courseCode);
+        values.put(DatabaseContract.Teaches.SECTIONCODE_COL3, sectionCode);
+
+        long rowid = db.insert(DatabaseContract.Teaches.TABLE_NAME,
+                null, values);
+
+        db.close();
+
+        return rowid;
     }
 
     /**
@@ -176,7 +234,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public long insertMeetingSection(@NonNull String courseCode, @NonNull String sectionCode,
                                      @Nullable String location,
                                      @Nullable String enrolmentIndicator, @Nullable String times) {
-        return -1; // stub
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.MeetingSection.COURSECODE_COL1, courseCode);
+        values.put(DatabaseContract.MeetingSection.SECTIONCODE_COL2, sectionCode);
+        values.put(DatabaseContract.MeetingSection.LOCATION_COL3, location);
+        values.put(DatabaseContract.MeetingSection.ENRLINDICATOR_COL4, enrolmentIndicator);
+        values.put(DatabaseContract.MeetingSection.TIMES_COL5, times);
+
+        long rowid = db.insert(DatabaseContract.MeetingSection.TABLE_NAME,
+                null, values);
+
+        db.close();
+
+        return rowid;
     }
 
     /**
