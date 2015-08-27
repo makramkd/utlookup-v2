@@ -1,8 +1,10 @@
 package org.lag.utlookup.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -42,7 +44,68 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return the rowid of the inserted row. This also happens to be the primary key of the table.
      */
     public long insertCourse(@NonNull Course course) {
-        return -1; // stub
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.Course.CODE_COL1, course.courseCode);
+        values.put(DatabaseContract.Course.NAME_COL2, course.courseName);
+        values.put(DatabaseContract.Course.PREREQS_COL3, course.prerequisites);
+        values.put(DatabaseContract.Course.COREQS_COL4, course.corequisites);
+        values.put(DatabaseContract.Course.EXCLUSIONS_COL5, course.exclusions);
+        values.put(DatabaseContract.Course.DESCRIPTION_COL6, course.courseDescription);
+
+        String brdr = null;
+        if (course.breadthRequirement != null && course.distributionRequirement != null) {
+            brdr = course.breadthRequirement + course.distributionRequirement;
+        }
+        values.put(DatabaseContract.Course.BRDR_COL7, brdr);
+        values.put(DatabaseContract.Course.RECPREP_COL8, course.recommendedPreparation);
+
+        long rowid = db.insert(DatabaseContract.Course.TABLE_NAME, null, values);
+
+        db.close();
+
+        return rowid;
+    }
+
+    public long insertCourse(@NonNull String courseCode, @NonNull String courseName,
+                             String prereqs, String coreqs, String exclusions,
+                             @NonNull String description,
+                             String brdr, String recPrep){
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.Course.CODE_COL1, courseCode);
+        values.put(DatabaseContract.Course.NAME_COL2, courseName);
+        values.put(DatabaseContract.Course.PREREQS_COL3, prereqs);
+        values.put(DatabaseContract.Course.COREQS_COL4, coreqs);
+        values.put(DatabaseContract.Course.EXCLUSIONS_COL5, exclusions);
+        values.put(DatabaseContract.Course.DESCRIPTION_COL6, description);
+        values.put(DatabaseContract.Course.BRDR_COL7, brdr);
+        values.put(DatabaseContract.Course.RECPREP_COL8, recPrep);
+
+        long rowid = db.insert(DatabaseContract.Course.TABLE_NAME, null, values);
+
+        db.close();
+
+        return rowid;
+    }
+
+    public long insertCourse(@NonNull String courseCode, @NonNull String courseName,
+                             @NonNull String description) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.Course.CODE_COL1, courseCode);
+        values.put(DatabaseContract.Course.NAME_COL2, courseName);
+        values.put(DatabaseContract.Course.DESCRIPTION_COL6, description);
+
+        long rowid = db.insert(DatabaseContract.Course.TABLE_NAME,
+                null, values);
+
+        db.close();
+
+        return rowid;
     }
 
     /**
@@ -53,7 +116,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return the rowid of the inserted row.
      */
     public long insertOffering(@NonNull String deptCode, @NonNull String courseCode) {
-        return -1; // stub
+        return -1;
     }
 
     /**
