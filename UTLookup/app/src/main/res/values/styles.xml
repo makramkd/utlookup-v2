@@ -35,4 +35,13 @@
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
 
+    <style name="ButtonStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">56dip</item>
+        <item name="android:minWidth">108dip</item>
+        <item name="android:paddingTop">8dip</item>
+        <item name="android:paddingBottom">8dip</item>
+    </style>
+
 </resources>

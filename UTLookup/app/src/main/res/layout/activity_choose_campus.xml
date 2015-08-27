@@ -9,35 +9,23 @@
     <TextView
         style="@style/TextViewSupertitle"
         android:gravity="center"
+        android:paddingTop="70dip"
+        android:paddingBottom="40dip"
         android:text="@string/app_name" />
 
-    <TextView
-        android:text="@string/pickCampus"
-        style="@style/TextViewSubtitle"
-        />
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/stGeorge"
-        />
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/sauga"
-        />
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/scarborough"
-        />
+    <Button
+        style="@style/ButtonStyle"
+        android:text="@string/searchText"
+        android:id="@+id/searchButton"
+        android:layout_gravity="center" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start"
-        android:id="@+id/startButton"
-        android:layout_gravity="right" />
+        style="@style/ButtonStyle"
+        android:layout_gravity="center"
+        android:text="@string/plan"/>
+
+    <Button
+        style="@style/ButtonStyle"
+        android:layout_gravity="center"
+        android:text="@string/aboutText"/>
 </LinearLayout>
