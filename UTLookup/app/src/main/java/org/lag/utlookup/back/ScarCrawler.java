@@ -123,7 +123,7 @@ public class ScarCrawler extends Crawler implements CourseCrawler {
      * @return a list of all departments offering courses at UTSC.
      */
     @Override
-    public List<String> getDepartmentList() {
+    public List<Department> getDepartmentList() {
         assert (getUrl().equals(ScarCrawler.CALENDAR_URL));
 
         final Elements elements = document.getElementsByTag("a");

@@ -129,7 +129,7 @@ public class SaugaCrawler extends Crawler implements CourseCrawler {
      * @return a list of all departments at UTM offering courses.
      */
     @Override
-    public List<String> getDepartmentList() {
+    public List<Department> getDepartmentList() {
         assert (getUrl().equals(SaugaCrawler.CALENDAR_URL));
 
         final Elements elements = document.getElementsByTag("a");

@@ -7,6 +7,7 @@
 package org.lag.utlookup.interfaces;
 
 import org.lag.utlookup.back.Course;
+import org.lag.utlookup.back.Department;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public interface CourseCrawler {
      * into account eventually.
      * @return a list of all departments in the university
      */
-    public List<String> getDepartmentList();
+    public List<Department> getDepartmentList();
     
     /**
      * Get a list of URLs to the each department's listing of courses. This is

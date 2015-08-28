@@ -97,7 +97,7 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
      * @return
      */
     @Override
-    public List<String> getDepartmentList() {
+    public List<Department> getDepartmentList() {
         assert (getUrl().equals(StGeorgeCrawler.CALENDAR_URL));
         final Elements links = document.getElementsByTag("a");
         // get stream of links to filter by link
@@ -108,10 +108,11 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
             }
         }
 
-        List<String> departments = new ArrayList<>();
+        List<Department> departments = new ArrayList<>();
 
         for (Element e : linksToCourses) {
-            departments.add(e.text());
+            departments.add(new Department(e.text(),
+                    e.attr("href").substring(4, 7).toUpperCase()));
         }
 
         return departments;
