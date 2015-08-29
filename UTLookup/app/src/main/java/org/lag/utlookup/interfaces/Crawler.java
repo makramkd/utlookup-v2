@@ -74,7 +74,7 @@ public abstract class Crawler {
 	 * is best suited for what they want to achieve.
 	 * 
 	 * For example, if you want to crawl the St. George campus's course information and timetable, you have to use the
-	 * St. Georege crawler. Since there is more than one link to keep track of, the crawler is the one that manages these
+	 * St. George crawler. Since there is more than one link to keep track of, the crawler is the one that manages these
 	 * links and not the caller.
 	 */
 	public abstract void initialize();
