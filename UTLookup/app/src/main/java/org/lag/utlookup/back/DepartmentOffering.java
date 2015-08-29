@@ -14,14 +14,14 @@ public class DepartmentOffering {
     /**
      * The code of the department that is offering this course. E.g "CSC".
      */
-    public long deptCode;
+    public String deptCode;
 
     /**
      * The course code being offered. E.g "CSC383".
      */
-    public long courseCode;
+    public String courseCode;
 
-    public DepartmentOffering(long id, long deptCode, long courseCode) {
+    public DepartmentOffering(long id, String deptCode, String courseCode) {
         this.id = id;
         this.deptCode = deptCode;
         this.courseCode = courseCode;
@@ -30,7 +30,7 @@ public class DepartmentOffering {
     public DepartmentOffering() {
     }
 
-    public DepartmentOffering(long deptCode, long courseCode) {
+    public DepartmentOffering(String deptCode, String courseCode) {
         this.deptCode = deptCode;
         this.courseCode = courseCode;
     }
