@@ -3,6 +3,7 @@ package org.lag.utlookup.back;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
@@ -41,6 +42,7 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
             ENROLMENT_INDICATOR = 8,
             ENROLMENT_CTRL = 9;
     private static final String EMPTY_CELL = "<font size=\"-1\">&nbsp;</font>";
+    public static final String UNMODIFIED_INDENTED = "unmodifiedindented";
 
     private CourseDataStore courseDatabase;
 
@@ -116,6 +118,44 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
         }
 
         return departments;
+    }
+
+    public List<Instructor> getInstructorList() {
+        assert (getUrl().equals(StGeorgeCrawler.CALENDAR_URL));
+
+        // we need the urls to the course pages
+        List<String> deptLinks = getCourseUrls();
+        List<Instructor> instructors = new ArrayList<>();
+        for (String deptLink : deptLinks) {
+            instructors.addAll(getInstructorListForDepartment(deptLink));
+        }
+
+        return instructors;
+    }
+
+    private List<Instructor> getInstructorListForDepartment(String departmentDirectLink) {
+        // we are assuming the given link is from the
+        // calendar.
+
+        List<Instructor> instructors = new ArrayList<>();
+
+        Document doc = null;
+        try {
+            // set an infinite timeout
+            doc = Jsoup.connect(departmentDirectLink).timeout(0).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // the profs are part of the unmodified indented class
+        Elements profObjects = doc.getElementsByClass(UNMODIFIED_INDENTED);
+        for (Element profObject : profObjects) {
+            instructors.add(new Instructor(profObject.text(),
+                    departmentDirectLink.substring(departmentDirectLink.length() - 7,
+                            departmentDirectLink.length() - 4)));
+        }
+
+        return instructors;
     }
 
     /**
