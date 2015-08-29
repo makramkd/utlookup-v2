@@ -64,12 +64,27 @@ public class StGeorgeCrawlerTest {
 
     @Test
     public void testGetCourseList() throws Exception {
+        List<Course> courses = crawler.getCourseList();
 
+        System.out.println(STARS);
+        System.out.println("@Test(testGetCourseList())");
+        for (Course c : courses) {
+            System.out.println("(" + c.courseCode + "," + c.courseName + ")");
+        }
+        System.out.println(STARS);
     }
 
     @Test
     public void testGetDepartmentTimetableLinks() throws Exception {
+        crawler.setUrl(StGeorgeCrawler.TIMETABLE_URL_FW);
+        List<String> departmentTimetableLinks = crawler.getDepartmentTimetableLinks();
 
+        System.out.println(STARS);
+        System.out.println("@Test(testGetDepartmentTimetableLinks())");
+        for (String departmentLink : departmentTimetableLinks) {
+            System.out.println(departmentLink);
+        }
+        System.out.println(STARS);
     }
 
     @Test
@@ -79,6 +94,19 @@ public class StGeorgeCrawlerTest {
 
     @Test
     public void testGetCourseDataStore() throws Exception {
+        return;
+    }
 
+    @Test
+    public void testGetDepartmentOfferings() throws Exception {
+        List<DepartmentOffering> departmentOfferings = crawler.getDepartmentOfferings();
+
+        System.out.println(STARS);
+        System.out.println("@Test(testGetDepartmentOfferings())");
+        for (DepartmentOffering departmentOffering : departmentOfferings) {
+            System.out.println("(" + departmentOffering.deptCode + ", " +
+            departmentOffering.courseCode + ")");
+        }
+        System.out.println(STARS);
     }
 }
