@@ -4,6 +4,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+import java.util.Set;
+
 import static org.junit.Assert.*;
 
 /**
@@ -11,6 +14,7 @@ import static org.junit.Assert.*;
  */
 public class StGeorgeCrawlerTest {
 
+    public static final String STARS = "****************************";
     StGeorgeCrawler crawler;
 
     @Before
@@ -25,17 +29,37 @@ public class StGeorgeCrawlerTest {
 
     @Test
     public void testGetCourseUrls() throws Exception {
-
+        Set<String> courseUrls = crawler.getCourseUrls();
+        System.out.println(STARS);
+        System.out.println("@Test(testGetCourseUrls())");
+        for (String string: courseUrls) {
+            System.out.println(string);
+        }
+        System.out.println(STARS);
     }
 
     @Test
     public void testGetDepartmentList() throws Exception {
+        List<Department> departmentList = crawler.getDepartmentList();
 
+        System.out.println(STARS);
+        System.out.println("@Test(testGetDepartmentList())");
+        for (Department d : departmentList) {
+            System.out.println("(" + d.code + ", " + d.name + ")");
+        }
+        System.out.println(STARS);
     }
 
     @Test
     public void testGetInstructorList() throws Exception {
+        List<Instructor> instructorList = crawler.getInstructorList();
 
+        System.out.println(STARS);
+        System.out.println("@Test(testGetInstructorList())");
+        for (Instructor i : instructorList) {
+            System.out.println("(" + i.name + "," + i.department + ")");
+        }
+        System.out.println(STARS);
     }
 
     @Test
