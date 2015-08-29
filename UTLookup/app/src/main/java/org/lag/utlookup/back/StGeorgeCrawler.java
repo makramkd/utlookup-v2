@@ -231,7 +231,7 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
             String name = text.substring(12, text.length());
             Element descriptionParagraph = e.nextElementSibling();
             String descriptionText = "";
-            if (descriptionParagraph.tagName().equals("p")) {
+            if ((descriptionParagraph != null) && descriptionParagraph.tagName().equals("p")) {
                 descriptionText = descriptionParagraph.text();
             }
             Course course = new Course(code, name);
@@ -341,6 +341,59 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
 
             c.insertMeetingSection(section);
         }
+    }
+
+    public List<DepartmentOffering> getDepartmentOfferings() {
+        List<DepartmentOffering> departmentOfferings = new ArrayList<>();
+        Set<String> departmentTimetableLinks = getCourseUrls();
+        for (String deptLink : departmentTimetableLinks) {
+            departmentOfferings.addAll(getDepartmentOfferingsForDepartment(deptLink));
+        }
+
+        return departmentOfferings;
+    }
+
+    public List<DepartmentOffering> getDepartmentOfferingsForDepartment(String departmentDirectLink) {
+        // we are assuming the given link is from the calendar
+        List<DepartmentOffering> departmentOfferings = new ArrayList<>();
+
+        // get the web page and parse it
+        Document doc = null;
+        try {
+            // set an infinite timeout
+            doc = Jsoup.connect(departmentDirectLink).timeout(0).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Elements strongObjects = doc.getElementsByClass("strong");
+
+        // java 7 solution
+        List<Element> courseObjects = new ArrayList<>();
+        for (Element e : strongObjects) {
+            if (e.text().length() >= 8
+                    && Pattern.matches(COURSE_REGEX, e.text().substring(0, 8))) {
+                courseObjects.add(e);
+            }
+        }
+
+        String deptCode = departmentDirectLink.substring(departmentDirectLink.length() - 7,
+                departmentDirectLink.length() - 4).toUpperCase();
+        for (Element e : courseObjects) {
+            String text = e.text();
+            String code = text.substring(0, 8);
+            departmentOfferings.add(new DepartmentOffering(deptCode, code));
+        }
+
+        return departmentOfferings;
+    }
+
+    public List<MeetingSection> getMeetingSections() {
+        return null; // // TODO: 8/29/15  
+    }
+
+    public List<MeetingSection> getMeetingSectionsForDepartment(String deptTimetableLink) {
+        return null; // // TODO: 8/29/15
     }
 
     public CourseDataStore getCourseDataStore() {
