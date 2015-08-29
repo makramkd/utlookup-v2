@@ -1,9 +1,12 @@
 package org.lag.utlookup.back;
 
+import android.support.annotation.Nullable;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
@@ -81,10 +84,10 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
      * @return a list of all course url literals located at the given url
      */
     @Override
-    public List<String> getCourseUrls() {
+    public Set<String> getCourseUrls() {
         assert (getUrl().equals(StGeorgeCrawler.CALENDAR_URL));
         List<Element> links = getCourseLinks();
-        List<String> urls = new ArrayList<>();
+        Set<String> urls = new TreeSet<>();
         for (Element e : links) {
             urls.add(getUrl() + e.attr("href"));
         }
@@ -124,15 +127,20 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
         assert (getUrl().equals(StGeorgeCrawler.CALENDAR_URL));
 
         // we need the urls to the course pages
-        List<String> deptLinks = getCourseUrls();
+        Set<String> deptLinks = getCourseUrls();
         List<Instructor> instructors = new ArrayList<>();
         for (String deptLink : deptLinks) {
-            instructors.addAll(getInstructorListForDepartment(deptLink));
+            List<Instructor> itors = getInstructorListForDepartment(deptLink);
+            if (itors == null) {
+                continue;
+            }
+            instructors.addAll(itors);
         }
 
         return instructors;
     }
 
+    @Nullable
     private List<Instructor> getInstructorListForDepartment(String departmentDirectLink) {
         // we are assuming the given link is from the
         // calendar.
@@ -142,9 +150,13 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
         Document doc = null;
         try {
             // set an infinite timeout
-            doc = Jsoup.connect(departmentDirectLink).timeout(0).get();
+            doc = Jsoup.connect(departmentDirectLink).timeout(2000).get();
         } catch (IOException e) {
-            e.printStackTrace();
+            doc = null;
+        }
+
+        if (doc == null) {
+            return null;
         }
 
         // the profs are part of the unmodified indented class
@@ -168,7 +180,7 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
     @Override
     public List<Course> getCourseList() {
         List<Course> courses = new ArrayList<>();
-        List<String> courseUrls = getCourseUrls();
+        Set<String> courseUrls = getCourseUrls();
 
         for (String url : courseUrls) {
             courses.addAll(getCourseListForDepartment(url));
@@ -217,7 +229,13 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
             String text = e.text();
             String code = text.substring(0, 8);
             String name = text.substring(12, text.length());
+            Element descriptionParagraph = e.nextElementSibling();
+            String descriptionText = "";
+            if (descriptionParagraph.tagName().equals("p")) {
+                descriptionText = descriptionParagraph.text();
+            }
             Course course = new Course(code, name);
+            course.courseDescription = descriptionText;
             courses.add(course);
         }
 

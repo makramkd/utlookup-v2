@@ -35,8 +35,8 @@ public abstract class Crawler {
 	public Crawler(String url)
 	{
 		try {
-			document = Jsoup.connect(url).get(); 
-		} catch (IOException ioe) {
+			document = Jsoup.connect(url).get();
+		} catch (Exception ioe) {
 			ioe.printStackTrace();
 		}
 		this.url = url;
@@ -61,7 +61,7 @@ public abstract class Crawler {
 		}
 		this.url = url;
 		try {
-			document = Jsoup.connect(url).get();
+			document = Jsoup.connect(url).timeout(0).get();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

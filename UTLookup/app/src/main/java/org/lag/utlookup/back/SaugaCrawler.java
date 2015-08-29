@@ -3,6 +3,8 @@ package org.lag.utlookup.back;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -74,7 +76,7 @@ public class SaugaCrawler extends Crawler implements CourseCrawler {
          */
 
         List<Course> courses = new ArrayList<>();
-        List<String> courseUrls = getCourseUrls();
+        Set<String> courseUrls = getCourseUrls();
 
         for (String url : courseUrls) {
             courses.addAll(getCourseListForDepartment(url));
@@ -86,6 +88,11 @@ public class SaugaCrawler extends Crawler implements CourseCrawler {
         }
         
         return courses;
+    }
+
+    @Override
+    public List<Department> getDepartmentList() {
+        return null;
     }
 
     /**
@@ -128,8 +135,7 @@ public class SaugaCrawler extends Crawler implements CourseCrawler {
      * Get a list of all departments at UTM offering courses.
      * @return a list of all departments at UTM offering courses.
      */
-    @Override
-    public List<Department> getDepartmentList() {
+    public List<String> getDepartmentListStrings() {
         assert (getUrl().equals(SaugaCrawler.CALENDAR_URL));
 
         final Elements elements = document.getElementsByTag("a");
@@ -150,11 +156,11 @@ public class SaugaCrawler extends Crawler implements CourseCrawler {
      * @return a list of URLs to all courses offered by UTM.
      */
     @Override
-    public List<String> getCourseUrls() {
+    public Set<String> getCourseUrls() {
         assert (getUrl().equals(SaugaCrawler.CALENDAR_URL));
 
         final Elements elements = document.getElementsByTag("a");
-        List<String> courseUrls = new ArrayList<>();
+        Set<String> courseUrls = new TreeSet<>();
 
 		// filter out by what the href is starting with and add that 
         // to the upper url

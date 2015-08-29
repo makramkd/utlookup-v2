@@ -10,6 +10,7 @@ import org.lag.utlookup.back.Course;
 import org.lag.utlookup.back.Department;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * An interface that attempts to unite all the course crawlers for different
@@ -45,5 +46,5 @@ public interface CourseCrawler {
      * done by scraping the calendar.
      * @return a list of URLs to the each department's listing of courses
      */
-    public List<String> getCourseUrls();
+    public Set<String> getCourseUrls();
 }
