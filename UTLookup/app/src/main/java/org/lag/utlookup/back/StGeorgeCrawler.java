@@ -186,10 +186,10 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
             courses.addAll(getCourseListForDepartment(url));
         }
 
-        if (!courseDatabaseFilled) {
-            courseDatabase.addAll(courses);
-            courseDatabaseFilled = true;
-        }
+//        if (!courseDatabaseFilled) {
+//            courseDatabase.addAll(courses);
+//            courseDatabaseFilled = true;
+//        }
         
         return courses;
     }
