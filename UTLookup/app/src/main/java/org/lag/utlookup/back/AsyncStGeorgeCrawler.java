@@ -1,9 +1,31 @@
 package org.lag.utlookup.back;
 
+import android.util.Log;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.lag.utlookup.ApplicationController;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
 /**
  * The difference between this crawler and StGeorge crawler is that
  * this one will use Volley to do asynchronous HTTP requests and will use
- * synchronized java methods to
+ * synchronized java methods to fill up java objects that were otherwise
+ * done serially in StGeorgeCrawler.
+ *
+ * Since Volley needs an Android Context we have to use this class only in
+ * the Android runtime (i.e this isn't possible in vanilla java).
  * Created by admin on 8/30/15.
  */
 public class AsyncStGeorgeCrawler {
@@ -36,5 +58,120 @@ public class AsyncStGeorgeCrawler {
     private static final String EMPTY_CELL = "<font size=\"-1\">&nbsp;</font>";
     public static final String UNMODIFIED_INDENTED = "unmodifiedindented";
 
+    public List<Course> courseList;
+    public List<Department> departmentList;
+    public List<DepartmentOffering> departmentOfferingList;
+    public List<DeptHead> deptHeadList;
+    public List<Instructor> instructorList;
+    public List<MeetingSection> meetingSectionList;
+    public Set<String> courseUrls;
 
+    public AsyncStGeorgeCrawler() {
+        courseList = new ArrayList<>();
+        departmentList = new ArrayList<>();
+        departmentOfferingList = new ArrayList<>();
+        deptHeadList = new ArrayList<>();
+        instructorList = new ArrayList<>();
+        meetingSectionList = new ArrayList<>();
+        courseUrls = new TreeSet<>();
+    }
+
+    private synchronized void addToCourseList(List<Course> courses) {
+        courseList.addAll(courses);
+        Log.d("ASTC", "added " + courses.size() + " elements to courseList");
+    }
+
+    private synchronized void addToDepartmentList(List<Department> departments) {
+        departmentList.addAll(departments);
+        Log.d("ASTC", "added " + departments.size() + " elements to departmentList");
+    }
+
+    private synchronized void addToDepartmentOfferingList(List<DepartmentOffering> departmentOfferings) {
+        departmentOfferingList.addAll(departmentOfferings);
+        Log.d("ASTC", "added " + departmentOfferings.size() + " elements to departmentOfferingList");
+    }
+
+    private synchronized void addToDeptHeadList(List<DeptHead> deptHeads) {
+        deptHeadList.addAll(deptHeads);
+        Log.d("ASTC", "added " + deptHeads.size() + " elements to deptHeadList");
+    }
+
+    private synchronized void addToInstructorList(List<Instructor> instructors) {
+        instructorList.addAll(instructors);
+        Log.d("ASTC", "added " + instructors.size() + " elements to instructorList");
+    }
+
+    private synchronized void addToInstructorListSingle(Instructor instructor) {
+        instructorList.add(instructor);
+    }
+
+    private synchronized void addToMeetingSectionList(List<MeetingSection> meetingSections) {
+        meetingSectionList.addAll(meetingSections);
+        Log.d("ASTC", "added " + meetingSections.size() + " elements to meetingSectionList");
+    }
+
+    private void addToCourseUrls(String url) {
+        courseUrls.add(url);
+    }
+
+    public StringRequest getCourseUrlsStringRequest() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET,
+                CALENDAR_URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                // parse the return html
+                Document document = Jsoup.parse(response);
+                final Elements links = document.getElementsByTag("a");
+                for (Element e : links) {
+                    if (e.attr("href").startsWith("crs")) {
+                        addToCourseUrls(CALENDAR_URL + e.attr("href"));
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("getCourseUrls", error.getMessage());
+            }
+        });
+
+        return stringRequest;
+    }
+
+    /**
+     * Get a StringRequest object that can be queued with Volley's request queue with
+     * the given department direct link. This is the link to the department course listing
+     * in the calendar and not in the timetable.
+     * @param departmentDirectLink the http link to the department's calendar (i.e course
+     *                             offerings).
+     * @return a Volley StringRequest object that can be queued with Volley's request queue.
+     */
+    public StringRequest getInstructorListForDepartmentStringRequest(final String departmentDirectLink) {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET,
+                departmentDirectLink, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                // parse the returned html
+                Document document = Jsoup.parse(response);
+                final Elements profObjects = document.getElementsByClass(UNMODIFIED_INDENTED);
+
+                List<Instructor> instructors = new ArrayList<>();
+                for (Element profObject : profObjects) {
+                    instructors.add(new Instructor(profObject.text(),
+                            departmentDirectLink.substring(departmentDirectLink.length() - 7,
+                                    departmentDirectLink.length() - 4)));
+                }
+                addToInstructorList(instructors);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("instructorListForDept",
+                        error.getMessage());
+            }
+        });
+
+        return stringRequest;
+    }
 }
