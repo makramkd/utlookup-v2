@@ -1,5 +1,6 @@
 package org.lag.utlookup.back;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -11,7 +12,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.lag.utlookup.ApplicationController;
 import org.lag.utlookup.ChooseCampusActivity;
 
 import java.util.ArrayList;
@@ -162,23 +162,67 @@ public class AsyncStGeorgeCrawler {
         StringRequest stringRequest = new StringRequest(Request.Method.GET,
                 departmentDirectLink, new Response.Listener<String>() {
             @Override
-            public void onResponse(String response) {
-                // parse the returned html
-                Document document = Jsoup.parse(response);
-                final Elements profObjects = document.getElementsByClass(UNMODIFIED_INDENTED);
+            public void onResponse(final String response) {
+//                // parse the returned html
+                new Thread() {
+                    @Override
+                    public void run() {
+                        Document document = Jsoup.parse(response);
+                        final Elements profObjects = document.getElementsByClass(UNMODIFIED_INDENTED);
 
-                List<Instructor> instructors = new ArrayList<>();
-                for (Element profObject : profObjects) {
-                    instructors.add(new Instructor(profObject.text(),
-                            departmentDirectLink.substring(departmentDirectLink.length() - 7,
-                                    departmentDirectLink.length() - 4)));
-                }
-                addToInstructorList(instructors);
+                        List<Instructor> instructors = new ArrayList<>();
+                        for (Element profObject : profObjects) {
+                            instructors.add(new Instructor(profObject.text(),
+                                    departmentDirectLink.substring(departmentDirectLink.length() - 7,
+                                            departmentDirectLink.length() - 4)));
+                        }
+                        addToInstructorList(instructors);
+                    }
+                }.start();
                 int count = requestCount.decrementAndGet();
                 if (count == 0) {
                     context.hideProgress();
                 }
-
+//                Document document = Jsoup.parse(response);
+//                final Elements profObjects = document.getElementsByClass(UNMODIFIED_INDENTED);
+//
+//                List<Instructor> instructors = new ArrayList<>();
+//                for (Element profObject : profObjects) {
+//                    instructors.add(new Instructor(profObject.text(),
+//                            departmentDirectLink.substring(departmentDirectLink.length() - 7,
+//                                    departmentDirectLink.length() - 4)));
+//                }
+//                addToInstructorList(instructors);
+//                int count = requestCount.decrementAndGet();
+//                if (count == 0) {
+//                    context.hideProgress();
+//                }
+//                AsyncTask<String, Void, Void> theTask = new AsyncTask<String, Void, Void>() {
+//
+//                    @Override
+//                    protected Void doInBackground(String... strings) {
+//                        // parse the returned html
+//                        String response = strings[0];
+//                        Document document = Jsoup.parse(response);
+//                        final Elements profObjects = document.getElementsByClass(UNMODIFIED_INDENTED);
+//
+//                        List<Instructor> instructors = new ArrayList<>();
+//                        for (Element profObject : profObjects) {
+//                            instructors.add(new Instructor(profObject.text(),
+//                                    departmentDirectLink.substring(departmentDirectLink.length() - 7,
+//                                            departmentDirectLink.length() - 4)));
+//                        }
+//                        addToInstructorList(instructors);
+//                        return null;
+//                    }
+//
+//                    protected void onPostExecute() {
+//                        int count = requestCount.decrementAndGet();
+//                        if (count == 0) {
+//                            context.hideProgress();
+//                        }
+//                    }
+//                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, response);
             }
         }, new Response.ErrorListener() {
             @Override
