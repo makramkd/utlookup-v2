@@ -6,7 +6,7 @@
     android:paddingLeft="16dip"
     android:paddingRight="16dip">
 
-    <TextView
+<!--    <TextView
         style="@style/TextViewSupertitle"
         android:gravity="center"
         android:paddingTop="70dip"
@@ -27,5 +27,29 @@
     <Button
         style="@style/ButtonStyle"
         android:layout_gravity="center"
-        android:text="@string/aboutText"/>
+        android:text="@string/aboutText"/>-->
+
+    <Button
+        android:text="Get Course String Requests"
+        android:layout_gravity="center"
+        android:id="@+id/getCoursesButton"
+        android:onClick="getCoursesButtonClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:layout_gravity="center"
+        android:id="@+id/getInstructorRequestsButton"
+        android:text="Get Instructor Requests"
+        android:onClick="getInstructorRequestsButtonClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/executeInstructorRequests"
+        android:text="Execute Instructor Requests"
+        android:layout_gravity="center"
+        android:onClick="executeInstructorRequestsButtonClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </LinearLayout>
