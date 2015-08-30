@@ -12,11 +12,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.lag.utlookup.ApplicationController;
+import org.lag.utlookup.ChooseCampusActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The difference between this crawler and StGeorge crawler is that
@@ -66,7 +68,11 @@ public class AsyncStGeorgeCrawler {
     public List<MeetingSection> meetingSectionList;
     public Set<String> courseUrls;
 
-    public AsyncStGeorgeCrawler() {
+    public AtomicInteger requestCount;
+
+    public ChooseCampusActivity context;
+
+    public AsyncStGeorgeCrawler(ChooseCampusActivity context) {
         courseList = new ArrayList<>();
         departmentList = new ArrayList<>();
         departmentOfferingList = new ArrayList<>();
@@ -74,6 +80,8 @@ public class AsyncStGeorgeCrawler {
         instructorList = new ArrayList<>();
         meetingSectionList = new ArrayList<>();
         courseUrls = new TreeSet<>();
+        requestCount = new AtomicInteger();
+        this.context = context;
     }
 
     private synchronized void addToCourseList(List<Course> courses) {
@@ -127,6 +135,10 @@ public class AsyncStGeorgeCrawler {
                         addToCourseUrls(CALENDAR_URL + e.attr("href"));
                     }
                 }
+                int count = requestCount.decrementAndGet();
+                if (count == 0) {
+                    context.hideProgress();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -162,6 +174,10 @@ public class AsyncStGeorgeCrawler {
                                     departmentDirectLink.length() - 4)));
                 }
                 addToInstructorList(instructors);
+                int count = requestCount.decrementAndGet();
+                if (count == 0) {
+                    context.hideProgress();
+                }
 
             }
         }, new Response.ErrorListener() {
