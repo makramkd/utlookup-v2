@@ -1,4 +1,4 @@
-package org.lag.utlookup.back;
+package me.makram.utlookup.database;
 
 /**
  * The Department class/entity will be used to encapsulate

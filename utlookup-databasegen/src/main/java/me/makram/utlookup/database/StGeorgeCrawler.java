@@ -1,6 +1,4 @@
-package org.lag.utlookup.back;
-
-import android.support.annotation.Nullable;
+package me.makram.utlookup.database;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,8 +11,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.lag.utlookup.interfaces.CourseCrawler;
-import org.lag.utlookup.interfaces.Crawler;
 
 public class StGeorgeCrawler extends Crawler implements CourseCrawler {
     
@@ -140,7 +136,6 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
         return instructors;
     }
 
-    @Nullable
     private List<Instructor> getInstructorListForDepartment(String departmentDirectLink) {
         // we are assuming the given link is from the
         // calendar.

@@ -4,10 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.lag.utlookup.interfaces;
-
-import org.lag.utlookup.back.Course;
-import org.lag.utlookup.back.Department;
+package me.makram.utlookup.database;
 
 import java.util.List;
 import java.util.Set;

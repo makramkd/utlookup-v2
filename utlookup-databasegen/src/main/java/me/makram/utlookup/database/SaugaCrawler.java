@@ -1,4 +1,4 @@
-package org.lag.utlookup.back;
+package me.makram.utlookup.database;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,8 +10,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.lag.utlookup.interfaces.CourseCrawler;
-import org.lag.utlookup.interfaces.Crawler;
 
 public class SaugaCrawler extends Crawler implements CourseCrawler {
 

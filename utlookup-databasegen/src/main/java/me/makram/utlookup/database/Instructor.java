@@ -1,6 +1,4 @@
-package org.lag.utlookup.back;
-
-import org.lag.utlookup.database.DatabaseContract;
+package me.makram.utlookup.database;
 
 /**
  * Created by admin on 8/27/15.
