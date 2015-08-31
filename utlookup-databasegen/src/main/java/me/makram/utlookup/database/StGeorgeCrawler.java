@@ -2,6 +2,7 @@ package me.makram.utlookup.database;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -110,12 +111,23 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
         }
 
         List<Department> departments = new ArrayList<>();
+        Comparator<Department> comparator = new Comparator<Department>() {
 
+            @Override
+            public int compare(Department o1, Department o2) {
+                return o1.code.compareTo(o2.code);
+            }
+            
+        };
+        Set<Department> departmentSet = new TreeSet<>(comparator);
+        
         for (Element e : linksToCourses) {
-            departments.add(new Department(e.text(),
+            departmentSet.add(new Department(e.text(),
                     e.attr("href").substring(4, 7).toUpperCase()));
         }
 
+        departments.addAll(departmentSet);
+        
         return departments;
     }
 
@@ -177,10 +189,20 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
         List<Course> courses = new ArrayList<>();
         Set<String> courseUrls = getCourseUrls();
 
+        Set<Course> courseSet = new TreeSet<>(new Comparator<Course>() {
+
+            @Override
+            public int compare(Course o1, Course o2) {
+                return o1.courseCode.compareTo(o2.courseCode);
+            }
+            
+        });
         for (String url : courseUrls) {
-            courses.addAll(getCourseListForDepartment(url));
+            courseSet.addAll(getCourseListForDepartment(url));
         }
 
+        courses.addAll(courseSet);
+        
 //        if (!courseDatabaseFilled) {
 //            courseDatabase.addAll(courses);
 //            courseDatabaseFilled = true;
