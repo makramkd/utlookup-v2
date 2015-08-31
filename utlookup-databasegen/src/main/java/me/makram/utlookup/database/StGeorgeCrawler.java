@@ -327,7 +327,8 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
             Course c = courseDatabase.get(currentCourseCode);
             assert (c != null);
 
-            MeetingSection section = new MeetingSection(meetingSection);
+            MeetingSection section = new MeetingSection(c.courseCode, 
+                    meetingSection);
             section.hasWaitingList = waitlist;
             section.location = loc;
             section.time.add(time);

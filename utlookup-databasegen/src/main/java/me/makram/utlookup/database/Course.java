@@ -82,7 +82,8 @@ public class Course {
 	
 	public void insertMeetingSection(String meetingSection, String time) {
 		meetingSectionToTimeMap.put(meetingSection, time);
-		MeetingSection section = new MeetingSection(meetingSection);
+		MeetingSection section = new MeetingSection(courseCode, 
+                        meetingSection);
 		section.time.add(time);
 		meetingSections.add(section);
 	}

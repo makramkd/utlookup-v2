@@ -48,7 +48,10 @@ public class MeetingSection {
 	 */
 	public List<String> time; // could replace Time with String because students already know how to read times from the timetable
 	
-	public MeetingSection(String sectionCode) {
+        public String courseCode;
+        
+	public MeetingSection(String courseCode, String sectionCode) {
+                this.courseCode = courseCode;
 		this.sectionCode = sectionCode;
 		this.time = new ArrayList<>();
 	}
