@@ -15,6 +15,7 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.sqlite.SQLiteConfig;
 
 /**
  *
@@ -31,16 +32,21 @@ public class DatabaseHelper {
     
     public static String DATABASE_NAME = "courseDatabase";
     public static int DATABASE_VERSION = 1;
+    public static boolean ENFORCE_FOREIGN_KEYS = false;
     
     private boolean initialized;
     
     private DatabaseHelper(String databaseName, String createQuery) {
         try {
             Class.forName(ORGSQLITE_JDBC);
+            
+            SQLiteConfig config = new SQLiteConfig();
+            config.enforceForeignKeys(ENFORCE_FOREIGN_KEYS);
+            
             dbConnection = DriverManager.getConnection(DATABASE_URL + 
                     databaseName +
-                    DATABASE_VERSION + ".db");
-            
+                    DATABASE_VERSION + ".db", config.toProperties());
+                                   
             dbConnection.setAutoCommit(false);
             
             Statement statement = dbConnection.createStatement();
