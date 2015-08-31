@@ -5,34 +5,35 @@
  */
 package me.makram.utlookup.database;
 
-import java.sql.*;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 /**
  *
  * @author admin
  */
 public class Main {
+
     public static void main(String[] args) {
-        Connection c = null;
-        Statement stmt = null;
-        try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:test.db");
-            stmt = c.createStatement();
-            String sql = "create table company " + 
-                    "(_id integer primary key, " + 
-                    "name text not null," +
-                    "age integer not null," + 
-                    "address text," +
-                    "salary real);";
-            int update = stmt.executeUpdate(sql);
-            System.out.println("Update value: " + update);
-            stmt.close();
-            c.close();
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(1);
+        DatabaseHelper instance = DatabaseHelper.instance();
+        boolean init = instance.isInitialized();
+        System.out.println("Database is initialized ? " + init);
+
+        StGeorgeCrawler crawler = new StGeorgeCrawler(
+                StGeorgeCrawler.CALENDAR_URL);
+        List<Instructor> instructorList = crawler.getInstructorList();
+        int[] insertions = instance.insertInstructors(instructorList);
+        for (int i : insertions) {
+            System.out.println(i);
         }
-        System.out.println("Created database successfully");
+    }
+
+    public static String readFile(String path, Charset encoding)
+            throws IOException {
+        byte[] encoded = Files.readAllBytes(Paths.get(path));
+        return new String(encoded, encoding);
     }
 }

@@ -5,10 +5,13 @@
  */
 package me.makram.utlookup.database;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,25 +32,48 @@ public class DatabaseHelper {
     public static String DATABASE_NAME = "courseDatabase";
     public static int DATABASE_VERSION = 1;
     
-    private DatabaseHelper(String databaseName) {
+    private boolean initialized;
+    
+    private DatabaseHelper(String databaseName, String createQuery) {
         try {
             Class.forName(ORGSQLITE_JDBC);
             dbConnection = DriverManager.getConnection(DATABASE_URL + 
                     databaseName +
                     DATABASE_VERSION + ".db");
+            
             dbConnection.setAutoCommit(false);
+            
+            Statement statement = dbConnection.createStatement();
+            statement.executeUpdate(createQuery);
+            
+            dbConnection.commit();
+            
+            initialized = true;
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(DatabaseHelper.class.getName())
                     .log(Level.SEVERE, null, ex);
+            initialized = false;
         }
     }
         
     public static DatabaseHelper instance() {
         if (databaseHelper == null) {
-            databaseHelper = new DatabaseHelper(DATABASE_NAME);
+            String CREATE_QUERY = null;
+            try {
+                CREATE_QUERY = Main.readFile("extras/databaseschema.sql",
+                        Charset.defaultCharset());
+            } catch (IOException ex) {
+                Logger.getLogger(DatabaseHelper.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
+            databaseHelper = new DatabaseHelper(DATABASE_NAME, CREATE_QUERY);
         }
         
         return databaseHelper;
+    }
+    
+    public final boolean isInitialized() {
+        return initialized;
     }
     
     public int[] insertInstructors(List<Instructor> instructors) {
