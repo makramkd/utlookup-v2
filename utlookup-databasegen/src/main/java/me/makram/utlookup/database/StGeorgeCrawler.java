@@ -159,7 +159,7 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
         for (Element profObject : profObjects) {
             instructors.add(new Instructor(profObject.text(),
                     departmentDirectLink.substring(departmentDirectLink.length() - 7,
-                            departmentDirectLink.length() - 4)));
+                            departmentDirectLink.length() - 4).toUpperCase()));
         }
 
         return instructors;
