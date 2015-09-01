@@ -9,6 +9,7 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +18,13 @@ import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 /**
- *
  * @author admin
  */
 public class AsyncStGeorgeCrawler {
@@ -74,7 +75,7 @@ public class AsyncStGeorgeCrawler {
 
         @Override
         public void onFailure(Request rqst, IOException ioe) {
-            Logger.getLogger("AsyncStGeorgeCrawler").log(Level.SEVERE, 
+            Logger.getLogger("AsyncStGeorgeCrawler").log(Level.SEVERE,
                     "Course URL request failed");
         }
 
@@ -95,20 +96,31 @@ public class AsyncStGeorgeCrawler {
 
     };
 
-    public final Callback instructorCallback = new Callback() {
+    public final Callback instructorsPerDepartmentCallback = new Callback() {
 
         @Override
-        public void onFailure(Request rqst, IOException ioe) {
-            
+        public void onFailure(Request request, IOException ioe) {
+            Logger.getLogger("AsyncStGeorgeCrawler").log(Level.SEVERE,
+                    "Instructor request failed");
         }
 
         @Override
-        public void onResponse(Response rspns) throws IOException {
-            
+        public void onResponse(Response response) throws IOException {
+            Document document = Jsoup.parse(response.body().string());
+            final Elements profObjects = document.getElementsByClass(UNMODIFIED_INDENTED);
+
+            List<Instructor> instructors = new ArrayList<>();
+            String theUrl = response.header("theUrl");
+            for (Element profObject : profObjects) {
+                instructors.add(new Instructor(profObject.text(),
+                        theUrl.substring(theUrl.length() - 7,
+                                theUrl.length() - 4)));
+            }
+            addToInstructorList(instructors);
         }
-        
+
     };
-    
+
     public AsyncStGeorgeCrawler() {
         courseList = new ArrayList<>();
         departmentList = new ArrayList<>();
@@ -123,7 +135,7 @@ public class AsyncStGeorgeCrawler {
     public OkHttpClient getClient() {
         return client;
     }
-    
+
     private synchronized void addToCourseList(List<Course> courses) {
         courseList.addAll(courses);
     }
@@ -160,11 +172,16 @@ public class AsyncStGeorgeCrawler {
         Request request = new Request.Builder()
                 .url(StGeorgeCrawler.CALENDAR_URL)
                 .build();
-        
+
         return request;
     }
 
     public Request getInstructorListForDepartmentRequest(String departmentDirectLink) {
-        return null;
+        Request request = new Request.Builder()
+                .url(departmentDirectLink)
+                .addHeader("theUrl", departmentDirectLink)
+                .build();
+
+        return request;
     }
 }
