@@ -240,7 +240,7 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
             e.printStackTrace();
         }
 
-        Document newDocument = wrapBRDRNodes(doc);
+        Document newDocument = annotateCourseDetails(doc);
 
         Elements strongObjects = newDocument.getElementsByClass("strong");
         Elements brObjects = newDocument.getElementsByClass("br");
@@ -316,7 +316,7 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
         return Sextet.with(prerequisite, corequisite, exclusion, breadthRequirement, dRequirement, recPrep);
     }
 
-    private Document wrapBRDRNodes(Document document) {
+    private Document annotateCourseDetails(Document document) {
         List<Node> childNodes = document.body().childNodes();
 
         for (Node childNode : childNodes) {
