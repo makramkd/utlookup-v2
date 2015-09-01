@@ -354,6 +354,30 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
         return document;
     }
 
+    private String getPrerequisites(Element prerequisiteNode) {
+        return null; // stub;
+    }
+
+    private String getExclusions(Element exclusionNode) {
+        return null;
+    }
+
+    private String getCorequisites(Element corequisitesNode) {
+        return null;
+    }
+
+    private String getRecommendedPrep(Element recommendedPrepNode) {
+        return null;
+    }
+
+    private String getBR(Element brNode) {
+        return null;
+    }
+
+    private String getDR(Element drNode) {
+        return null;
+    }
+
     private String getClassName(String nodeText) {
         if (nodeText.startsWith("Exclusion")) {
             return EXCLUSION_CLASS;
