@@ -8,19 +8,22 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
+import org.javatuples.Sextet;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 public class StGeorgeCrawler extends Crawler implements CourseCrawler {
-    
+
     /**
-    * The link to the calendar of the next valid fall/winter session. This link holds the metadata to all the courses,
-    * such as course code, course name, prereqs, coreqs, and so on, also separated by department.
-    */
+     * The link to the calendar of the next valid fall/winter session. This link holds the metadata to all the courses,
+     * such as course code, course name, prereqs, coreqs, and so on, also separated by department.
+     */
     public static final String CALENDAR_URL = "http://www.artsandscience.utoronto.ca/ofr/calendar/";
-	
+
     /**
      * The link to the timetable of the next valid fall/winter session. This
      * link hold all the links to the timetables of the courses, separated by
@@ -43,6 +46,12 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
             ENROLMENT_CTRL = 9;
     private static final String EMPTY_CELL = "<font size=\"-1\">&nbsp;</font>";
     public static final String UNMODIFIED_INDENTED = "unmodifiedindented";
+    public static final String EXCLUSION_CLASS = "exclusion";
+    public static final String PREREQ_CLASS = "prereq";
+    public static final String COREQ_CLASS = "coreq";
+    public static final String BR_CLASS = "br";
+    public static final String DR_CLASS = "dr";
+    public static final String RECOMMENDED_PREP_CLASS = "recommendedPrep";
 
     private CourseDataStore courseDatabase;
 
@@ -117,17 +126,17 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
             public int compare(Department o1, Department o2) {
                 return o1.code.compareTo(o2.code);
             }
-            
+
         };
         Set<Department> departmentSet = new TreeSet<>(comparator);
-        
+
         for (Element e : linksToCourses) {
             departmentSet.add(new Department(e.text(),
                     e.attr("href").substring(4, 7).toUpperCase()));
         }
 
         departments.addAll(departmentSet);
-        
+
         return departments;
     }
 
@@ -195,19 +204,19 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
             public int compare(Course o1, Course o2) {
                 return o1.courseCode.compareTo(o2.courseCode);
             }
-            
+
         });
         for (String url : courseUrls) {
             courseSet.addAll(getCourseListForDepartment(url));
         }
 
         courses.addAll(courseSet);
-        
+
 //        if (!courseDatabaseFilled) {
 //            courseDatabase.addAll(courses);
 //            courseDatabaseFilled = true;
 //        }
-        
+
         return courses;
     }
 
@@ -231,7 +240,14 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
             e.printStackTrace();
         }
 
-        Elements strongObjects = doc.getElementsByClass("strong");
+        Document newDocument = wrapBRDRNodes(doc);
+
+        Elements strongObjects = newDocument.getElementsByClass("strong");
+        Elements brObjects = newDocument.getElementsByClass("br");
+        Elements drObjects = newDocument.getElementsByClass("dr");
+        Elements prereqObjects = newDocument.getElementsByClass("prereq");
+        Elements coreqObjects = newDocument.getElementsByClass("coreq");
+        Elements exclusionObjects = newDocument.getElementsByClass("exclusion");
 
         // java 7 solution
         List<Element> courseObjects = new ArrayList<>();
@@ -242,21 +258,118 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
             }
         }
 
+        // the format looks like this:
+        // <span class="strong">....</span>
+        // <p>course description</p>
+        // Prerequisite: .... (optional)
+        // <br />
+        // Exclusion: ..... (optional)
+        // <br />
+        // Corequisite: ... (optional)
+        // <br />
+        // Distribution Requirement: ... (mandatory I think)
+        // <br />
+        // Breadth Requirement: ... (mandatory I think)
+        // <br />
         for (Element e : courseObjects) {
             String text = e.text();
             String code = text.substring(0, 8);
             String name = text.substring(12, text.length());
+
             Element descriptionParagraph = e.nextElementSibling();
             String descriptionText = "";
             if ((descriptionParagraph != null) && descriptionParagraph.tagName().equals("p")) {
                 descriptionText = descriptionParagraph.text();
             }
+
+            Sextet<String, String, String, String, String, String> details =
+                    getCourseDetails(e);
+
             Course course = new Course(code, name);
             course.courseDescription = descriptionText;
+            course.prerequisites = details.getValue0();
+            course.corequisites = details.getValue1();
+            course.exclusions = details.getValue2();
+            course.breadthRequirement = details.getValue3();
+            course.distributionRequirement = details.getValue4();
+            course.recommendedPreparation = details.getValue5();
+
             courses.add(course);
         }
 
         return courses;
+    }
+
+    private Sextet<String, String, String, String, String, String> getCourseDetails(Element courseObject) {
+        String prerequisite = null, corequisite = null,
+                exclusion = null, breadthRequirement = null,
+                dRequirement = null, recPrep = null;
+
+        List<Node> nodesUntilNextText = new ArrayList<>();
+
+        Node descriptionNode = courseObject.nextSibling();
+
+        if (descriptionNode != null) {
+
+        }
+
+        return Sextet.with(prerequisite, corequisite, exclusion, breadthRequirement, dRequirement, recPrep);
+    }
+
+    private Document wrapBRDRNodes(Document document) {
+        List<Node> childNodes = document.body().childNodes();
+
+        for (Node childNode : childNodes) {
+            String nodeText = childNode.toString();
+            if (childNode instanceof TextNode &&
+                    (nodeText.startsWith("Breadth Requirement") ||
+                            nodeText.startsWith("Distribution Requirement") ||
+                            nodeText.startsWith("Exclusion") ||
+                            nodeText.startsWith("Prerequisite") ||
+                            nodeText.startsWith("Corequisite") ||
+                            nodeText.startsWith("Recommended")
+                    )) {
+                // go back until first span.strong element
+                Node courseNode = null;
+                Node previousSibling = childNode.previousSibling();
+                while (previousSibling != null) {
+                    if (previousSibling.attr("class").equals("strong")) {
+                        courseNode = previousSibling;
+                        break;
+                    } else {
+                        previousSibling = previousSibling.previousSibling();
+                    }
+                }
+
+                if (courseNode != null) {
+                    Element theCourse = (Element) courseNode;
+                    String className = getClassName(nodeText);
+                    childNode.wrap("<span courseReferringTo=\"" + theCourse.text().substring(0, 8) + "\"" +
+                            " class=\"" + className + "\">"
+                            + "</span>");
+                }
+            }
+        }
+
+        return document;
+    }
+
+    private String getClassName(String nodeText) {
+        if (nodeText.startsWith("Exclusion")) {
+            return EXCLUSION_CLASS;
+        } else if (nodeText.startsWith("Prerequisite")) {
+            return PREREQ_CLASS;
+        } else if (nodeText.startsWith("Corequisite")) {
+            return COREQ_CLASS;
+        } else if (nodeText.startsWith("Breadth")) {
+            return BR_CLASS;
+        } else if (nodeText.startsWith("Distribution")) {
+            return DR_CLASS;
+        } else if (nodeText.startsWith("Recommended")) {
+            return RECOMMENDED_PREP_CLASS;
+        }
+
+        return "undefined";
     }
 
     /**
@@ -287,8 +400,8 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
      * in order to populate the course database with the {@link Course} objects.
      *
      * @param linkToTimetable given link that should have the format
-     * {@code http://www.artsandscience.utoronto.ca/ofr/timetable/winter/coursecode.html}
-     * where coursecode is different for each course.
+     *                        {@code http://www.artsandscience.utoronto.ca/ofr/timetable/winter/coursecode.html}
+     *                        where coursecode is different for each course.
      */
     public void populateDatabaseFromLink(String linkToTimetable) {
         // sanity checks
@@ -307,12 +420,12 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
         // get the table rows
         final Elements rows = doc.getElementsByTag("tr");
 
-		// the table has 10 columns, so the indices of the children of the tr will be from 0 to 9
+        // the table has 10 columns, so the indices of the children of the tr will be from 0 to 9
         // except for the first row, because it is only the title of the table. For this reason
         // we start the loop at index 2 of the rows list.
         final int size = rows.size();
 
-		// the table contains rows that have no information in one (or more) of the following cols:
+        // the table contains rows that have no information in one (or more) of the following cols:
         // Course, section code, title, location, instructor, and so on
         // however, all we are concerned with is the course column. 
         Element majorRow = null;
@@ -326,7 +439,7 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
                 majorRow = currentRow;
                 currentCourseCode = majorRow.child(COURSE_CODE).text();
             }
-			// index 0: course code, 1: section code, 2: title, 3: meeting section, 4: wait list (yes or no)
+            // index 0: course code, 1: section code, 2: title, 3: meeting section, 4: wait list (yes or no)
             // 5: time, 6: location, 7: instructor, 8: enrolment indicator, 9: enrolment controls (useless)
 
             final String courseCode = currentRow.child(COURSE_CODE).text(); // could be equal to EMPTY_CELL
@@ -349,7 +462,7 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
             Course c = courseDatabase.get(currentCourseCode);
             assert (c != null);
 
-            MeetingSection section = new MeetingSection(c.courseCode, 
+            MeetingSection section = new MeetingSection(c.courseCode,
                     meetingSection);
             section.hasWaitingList = waitlist;
             section.location = loc;
@@ -420,11 +533,11 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
 
     @Override
     public void initialize() {
-        
+
     }
 
     @Override
     public void crawl() {
-        
+
     }
 }
