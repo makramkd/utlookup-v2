@@ -18,38 +18,38 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        DatabaseHelper.DATABASE_VERSION = 2;
-        DatabaseHelper instance = DatabaseHelper.instance();
-        boolean init = instance.isInitialized();
-        System.out.println("Database is initialized ? " + init);
-
+//        DatabaseHelper.DATABASE_VERSION = 2;
+//        DatabaseHelper instance = DatabaseHelper.instance();
+//        boolean init = instance.isInitialized();
+//        System.out.println("Database is initialized ? " + init);
+//
         StGeorgeCrawler crawler = new StGeorgeCrawler(
                 StGeorgeCrawler.CALENDAR_URL);
-        
-        List<Department> departmentList = crawler.getDepartmentList();
-        int[] depsInserted = instance.insertDepartments(departmentList);
-        System.out.println("Inserted " + depsInserted.length + 
-                " department tuples into the database");
-        
-        List<Instructor> instructorList = crawler.getInstructorList();
-        int[] insertions = instance.insertInstructors(instructorList);
-        System.out.println("Inserted " + insertions.length + 
-                " instructor tuples to the " +
-                "database");
-        
-        List<DepartmentOffering> depOfferingList = 
-                crawler.getDepartmentOfferings();
-        int[] depOffersInserted = 
-                instance.insertDepartmentOfferings(depOfferingList);
-        System.out.println("Inserted " + depOffersInserted.length + 
-                " department offer tuples into the database.");
-        
+//
+//        List<Department> departmentList = crawler.getDepartmentList();
+//        int[] depsInserted = instance.insertDepartments(departmentList);
+//        System.out.println("Inserted " + depsInserted.length +
+//                " department tuples into the database");
+//
+//        List<Instructor> instructorList = crawler.getInstructorList();
+//        int[] insertions = instance.insertInstructors(instructorList);
+//        System.out.println("Inserted " + insertions.length +
+//                " instructor tuples to the " +
+//                "database");
+//
+//        List<DepartmentOffering> depOfferingList =
+//                crawler.getDepartmentOfferings();
+//        int[] depOffersInserted =
+//                instance.insertDepartmentOfferings(depOfferingList);
+//        System.out.println("Inserted " + depOffersInserted.length +
+//                " department offer tuples into the database.");
+//
         List<Course> courseList = 
                 crawler.getCourseList();
-        int[] coursesInserted = 
-                instance.insertCourses(courseList);
-        System.out.println("Inserted " + coursesInserted.length + 
-                " course tuples into the database.");
+//        int[] coursesInserted =
+//                instance.insertCourses(courseList);
+//        System.out.println("Inserted " + coursesInserted.length +
+//                " course tuples into the database.");
         
     }
 
