@@ -12,7 +12,7 @@ import java.util.Map;
  * @author Makram
  *
  */
-public class Course {
+public class Course implements Comparable<Course> {
 	
 	/**
 	 * Must be supplied: the course code. This is guaranteed to be
@@ -103,5 +103,10 @@ public class Course {
 	
 	public List<MeetingSection> getMeetingSections() {
 		return meetingSections;
+	}
+
+	@Override
+	public int compareTo(Course o) {
+		return courseCode.compareTo(o.courseCode);
 	}
 }

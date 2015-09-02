@@ -5,7 +5,7 @@ package me.makram.utlookup.database;
  * information about a department in the university.
  * Created by admin on 8/26/15.
  */
-public class Department {
+public class Department implements Comparable<Department> {
     /**
      * An identification number that is unique and that will probably be
      * provided by the database. The only reason we put it here is so that
@@ -38,5 +38,10 @@ public class Department {
     public Department(String name, String code) {
         this.name = name;
         this.code = code;
+    }
+
+    @Override
+    public int compareTo(Department o) {
+        return code.compareTo(o.code);
     }
 }
