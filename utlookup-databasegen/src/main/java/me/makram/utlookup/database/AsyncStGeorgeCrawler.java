@@ -188,4 +188,20 @@ public class AsyncStGeorgeCrawler {
 
         return request;
     }
+
+    public Request getCourseListForDepartmentRequest(String departmentDirectLink) {
+        Request request = new Request.Builder()
+                .url(departmentDirectLink)
+                .build();
+
+        return request;
+    }
+
+    public Request getDepartmentOfferingsForDepartmentRequest(String departmentDirectLink) {
+        Request request = new Request.Builder()
+                .url(departmentDirectLink)
+                .build();
+
+        return request;
+    }
 }
