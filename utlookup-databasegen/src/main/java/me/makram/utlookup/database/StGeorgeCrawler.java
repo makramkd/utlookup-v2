@@ -44,6 +44,7 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
             INSTRUCTOR = 7,
             ENROLMENT_INDICATOR = 8,
             ENROLMENT_CTRL = 9;
+
     private static final String EMPTY_CELL = "<font size=\"-1\">&nbsp;</font>";
     public static final String UNMODIFIED_INDENTED = "unmodifiedindented";
     public static final String EXCLUSION_CLASS = "exclusion";
@@ -52,6 +53,14 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
     public static final String BR_CLASS = "br";
     public static final String DR_CLASS = "dr";
     public static final String RECOMMENDED_PREP_CLASS = "recommendedPrep";
+    public static final String COURSE_REFERRING_TO = "courseReferringTo";
+    public static final String BREADTH_REQUIREMENT = "Breadth Requirement";
+    public static final String DISTRIBUTION_REQUIREMENT = "Distribution Requirement";
+    public static final String EXCLUSION = "Exclusion";
+    public static final String PREREQUISITE = "Prerequisite";
+    public static final String COREQUISITE = "Corequisite";
+    public static final String RECOMMENDED = "Recommended";
+    public static final String ENROLMENT_LIMITS = "Enrolment Limits";
 
     private CourseDataStore courseDatabase;
 
@@ -243,11 +252,6 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
         Document newDocument = annotateCourseDetails(doc);
 
         Elements strongObjects = newDocument.getElementsByClass("strong");
-        Elements brObjects = newDocument.getElementsByClass("br");
-        Elements drObjects = newDocument.getElementsByClass("dr");
-        Elements prereqObjects = newDocument.getElementsByClass("prereq");
-        Elements coreqObjects = newDocument.getElementsByClass("coreq");
-        Elements exclusionObjects = newDocument.getElementsByClass("exclusion");
 
         // java 7 solution
         List<Element> courseObjects = new ArrayList<>();
@@ -282,38 +286,41 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
                 descriptionText = descriptionParagraph.text();
             }
 
-            Sextet<String, String, String, String, String, String> details =
-                    getCourseDetails(e);
-
             Course course = new Course(code, name);
             course.courseDescription = descriptionText;
-            course.prerequisites = details.getValue0();
-            course.corequisites = details.getValue1();
-            course.exclusions = details.getValue2();
-            course.breadthRequirement = details.getValue3();
-            course.distributionRequirement = details.getValue4();
-            course.recommendedPreparation = details.getValue5();
+
+            Elements details = newDocument.getElementsByAttributeValue(COURSE_REFERRING_TO, code);
+            for (Element detail : details) {
+                final String aClass = detail.attr("class");
+                if (aClass.equals(PREREQ_CLASS)) {
+                    String[] prePrereq = detail.text().split(":");
+                    String s = prePrereq.length == 1 ? "" : prePrereq[1];
+                    course.prerequisites = s + getCourseDetails(detail);
+                } else if (aClass.equals(COREQ_CLASS)) {
+                    String[] coreqReq = detail.text().split(":");
+                    String s = coreqReq.length == 1 ? "" : coreqReq[1];
+                    course.corequisites = getCourseDetails(detail);
+                } else if (aClass.equals(EXCLUSION_CLASS)) {
+                    String[] exclusionSion = detail.text().split(":");
+                    String s = exclusionSion.length == 1 ? "" : exclusionSion[1];
+                    course.exclusions = getCourseDetails(detail);
+                } else if (aClass.equals(RECOMMENDED_PREP_CLASS)) {
+                    String[] recPrepPrep = detail.text().split(":");
+                    String s = recPrepPrep.length == 1 ? "" : recPrepPrep[1];
+                    course.recommendedPreparation = getCourseDetails(detail);
+                } else if (aClass.equals(BR_CLASS)) {
+                    String[] theText = detail.text().split(":");
+                    course.breadthRequirement = theText[1];
+                } else if (aClass.equals(DR_CLASS)) {
+                    String[] theText = detail.text().split(":");
+                    course.distributionRequirement = theText[1];
+                }
+            }
 
             courses.add(course);
         }
 
         return courses;
-    }
-
-    private Sextet<String, String, String, String, String, String> getCourseDetails(Element courseObject) {
-        String prerequisite = null, corequisite = null,
-                exclusion = null, breadthRequirement = null,
-                dRequirement = null, recPrep = null;
-
-        List<Node> nodesUntilNextText = new ArrayList<>();
-
-        Node descriptionNode = courseObject.nextSibling();
-
-        if (descriptionNode != null) {
-
-        }
-
-        return Sextet.with(prerequisite, corequisite, exclusion, breadthRequirement, dRequirement, recPrep);
     }
 
     private Document annotateCourseDetails(Document document) {
@@ -322,12 +329,13 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
         for (Node childNode : childNodes) {
             String nodeText = childNode.toString();
             if (childNode instanceof TextNode &&
-                    (nodeText.startsWith("Breadth Requirement") ||
-                            nodeText.startsWith("Distribution Requirement") ||
-                            nodeText.startsWith("Exclusion") ||
-                            nodeText.startsWith("Prerequisite") ||
-                            nodeText.startsWith("Corequisite") ||
-                            nodeText.startsWith("Recommended")
+                    (nodeText.startsWith(BREADTH_REQUIREMENT) ||
+                            nodeText.startsWith(DISTRIBUTION_REQUIREMENT) ||
+                            nodeText.startsWith(EXCLUSION) ||
+                            nodeText.startsWith(PREREQUISITE) ||
+                            nodeText.startsWith(COREQUISITE) ||
+                            nodeText.startsWith(RECOMMENDED) ||
+                            nodeText.startsWith(ENROLMENT_LIMITS)
                     )) {
                 // go back until first span.strong element
                 Node courseNode = null;
@@ -354,42 +362,52 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
         return document;
     }
 
-    private String getPrerequisites(Element prerequisiteNode) {
-        return null; // stub;
-    }
+    /**
+     *
+     * @param detailNode
+     * @return
+     */
+    private String getCourseDetails(Element detailNode) {
+        StringBuilder sb = new StringBuilder();
+        Node currentNode = detailNode.nextSibling();
+        boolean isTextNode = false, isElement = false;
+        TextNode textNode = null;
+        Element textElement = null;
+        while (currentNode != null && !currentNode.hasAttr(COURSE_REFERRING_TO)) {
+            if (currentNode instanceof TextNode) {
+                isTextNode = true;
+                isElement = false;
+                textNode = (TextNode) currentNode;
+            } else if (currentNode instanceof Element) {
+                isTextNode = false;
+                isElement = true;
+                textElement = (Element) currentNode;
+            }
+            if (isElement && textElement != null) {
+                sb.append(textElement.text());
+            } else if (isTextNode && textNode != null){
+                sb.append(textNode.toString());
+            } else {
+                sb.append(currentNode.toString());
+            }
+            currentNode = currentNode.nextSibling();
+        }
 
-    private String getExclusions(Element exclusionNode) {
-        return null;
-    }
-
-    private String getCorequisites(Element corequisitesNode) {
-        return null;
-    }
-
-    private String getRecommendedPrep(Element recommendedPrepNode) {
-        return null;
-    }
-
-    private String getBR(Element brNode) {
-        return null;
-    }
-
-    private String getDR(Element drNode) {
-        return null;
+        return sb.toString();
     }
 
     private String getClassName(String nodeText) {
         if (nodeText.startsWith("Exclusion")) {
             return EXCLUSION_CLASS;
-        } else if (nodeText.startsWith("Prerequisite")) {
+        } else if (nodeText.startsWith(PREREQUISITE)) {
             return PREREQ_CLASS;
-        } else if (nodeText.startsWith("Corequisite")) {
+        } else if (nodeText.startsWith(COREQUISITE)) {
             return COREQ_CLASS;
         } else if (nodeText.startsWith("Breadth")) {
             return BR_CLASS;
         } else if (nodeText.startsWith("Distribution")) {
             return DR_CLASS;
-        } else if (nodeText.startsWith("Recommended")) {
+        } else if (nodeText.startsWith(RECOMMENDED)) {
             return RECOMMENDED_PREP_CLASS;
         }
 
