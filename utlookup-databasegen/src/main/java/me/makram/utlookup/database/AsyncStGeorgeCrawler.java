@@ -110,13 +110,15 @@ public class AsyncStGeorgeCrawler {
             final Elements profObjects = document.getElementsByClass(UNMODIFIED_INDENTED);
 
             List<Instructor> instructors = new ArrayList<>();
-            String theUrl = response.header("theUrl");
+            String theUrl = response.request().urlString();
             for (Element profObject : profObjects) {
                 instructors.add(new Instructor(profObject.text(),
                         theUrl.substring(theUrl.length() - 7,
-                                theUrl.length() - 4)));
+                                theUrl.length() - 4).toUpperCase()));
             }
             addToInstructorList(instructors);
+
+            requestCount.getAndDecrement();
         }
 
     };
@@ -154,6 +156,7 @@ public class AsyncStGeorgeCrawler {
 
     private synchronized void addToInstructorList(List<Instructor> instructors) {
         instructorList.addAll(instructors);
+        System.out.println("Added " + instructors.size() + " instructors.");
     }
 
     private synchronized void addToInstructorListSingle(Instructor instructor) {
@@ -164,8 +167,9 @@ public class AsyncStGeorgeCrawler {
         meetingSectionList.addAll(meetingSections);
     }
 
-    private void addToCourseUrls(String url) {
+    protected void addToCourseUrls(String url) {
         courseUrls.add(url);
+        System.out.println("Added url " + url + " to course urls.");
     }
 
     public Request getCourseUrlRequest() {
