@@ -81,18 +81,42 @@ public class Main {
             e.printStackTrace();
         }
 
-        List<Request> requests = new ArrayList<>();
+        List<Request> instructorRequests = new ArrayList<>();
+        List<Request> courseRequests = new ArrayList<>();
+        List<Request> offerRequests = new ArrayList<>();
+        Request departmentRequest = crawler.getDepartmentsRequest();
+
         for (String url : crawler.courseUrls) {
-            requests.add(crawler.getInstructorListForDepartmentRequest(url));
+            instructorRequests.add(crawler.getInstructorListForDepartmentRequest(url));
+            courseRequests.add(crawler.getCourseListForDepartmentRequest(url));
+            offerRequests.add(crawler.getDepartmentOfferingsForDepartmentRequest(url));
         }
 
-        crawler.requestCount.set(requests.size());
+        crawler.requestCount.set(instructorRequests.size()
+                + courseRequests.size() +
+                offerRequests.size() + 1);
 
-        for (Request request : requests) {
+        for (Request request : instructorRequests) {
             crawler.getClient()
                     .newCall(request)
                     .enqueue(crawler.instructorsPerDepartmentCallback);
         }
+
+        for (Request request : courseRequests) {
+            crawler.getClient()
+                    .newCall(request)
+                    .enqueue(crawler.coursesPerDepartmentCallback);
+        }
+
+        for (Request request : offerRequests) {
+            crawler.getClient()
+                    .newCall(request)
+                    .enqueue(crawler.offersPerDepartmentCallback);
+        }
+
+        crawler.getClient()
+                .newCall(departmentRequest)
+                .enqueue(crawler.departmentsCallback);
 
         while (crawler.requestCount.get() != 0) {
             continue;
