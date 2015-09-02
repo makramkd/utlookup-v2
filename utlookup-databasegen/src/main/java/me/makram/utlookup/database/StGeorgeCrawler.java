@@ -1,20 +1,15 @@
 package me.makram.utlookup.database;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
-
-import org.javatuples.Sextet;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class StGeorgeCrawler extends Crawler implements CourseCrawler {
 
@@ -53,6 +48,7 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
     public static final String BR_CLASS = "br";
     public static final String DR_CLASS = "dr";
     public static final String RECOMMENDED_PREP_CLASS = "recommendedPrep";
+    public static final String ENROLMENT_LIMITS_CLASS = "enrolmentLimits";
     public static final String COURSE_REFERRING_TO = "courseReferringTo";
     public static final String BREADTH_REQUIREMENT = "Breadth Requirement";
     public static final String DISTRIBUTION_REQUIREMENT = "Distribution Requirement";
@@ -303,11 +299,11 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
                 } else if (aClass.equals(EXCLUSION_CLASS)) {
                     String[] exclusionSion = detail.text().split(":");
                     String s = exclusionSion.length == 1 ? "" : exclusionSion[1];
-                    course.exclusions = getCourseDetails(detail);
+                    course.exclusions = s + getCourseDetails(detail);
                 } else if (aClass.equals(RECOMMENDED_PREP_CLASS)) {
                     String[] recPrepPrep = detail.text().split(":");
                     String s = recPrepPrep.length == 1 ? "" : recPrepPrep[1];
-                    course.recommendedPreparation = getCourseDetails(detail);
+                    course.recommendedPreparation = s + getCourseDetails(detail);
                 } else if (aClass.equals(BR_CLASS)) {
                     String[] theText = detail.text().split(":");
                     course.breadthRequirement = theText[1];
@@ -409,6 +405,8 @@ public class StGeorgeCrawler extends Crawler implements CourseCrawler {
             return DR_CLASS;
         } else if (nodeText.startsWith(RECOMMENDED)) {
             return RECOMMENDED_PREP_CLASS;
+        } else if (nodeText.startsWith(ENROLMENT_LIMITS)) {
+            return ENROLMENT_LIMITS_CLASS;
         }
 
         return "undefined";
