@@ -77,6 +77,18 @@ public class Main {
                             + e.attr("href"));
                 }
             }
+
+            Response timetableResponse = crawler
+                    .getClient()
+                    .newCall(crawler.getDepartmentTimetableUrlsRequest())
+                    .execute();
+            Document document1 = Jsoup.parse(timetableResponse.body().string());
+            // find the links in the page: these are direct descendants of <li> elements
+            Elements departmentLinks = document1.select("li > a");
+            for (Element e : departmentLinks) {
+                crawler.timetableDepartmentUrls.add(StGeorgeCrawler.TIMETABLE_URL_FW + e.attr("href"));
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -85,11 +97,16 @@ public class Main {
         List<Request> courseRequests = new ArrayList<>();
         List<Request> offerRequests = new ArrayList<>();
         Request departmentRequest = crawler.getDepartmentsRequest();
+        List<Request> meetingSectionRequests = new ArrayList<>();
 
         for (String url : crawler.courseUrls) {
             instructorRequests.add(crawler.getInstructorListForDepartmentRequest(url));
             courseRequests.add(crawler.getCourseListForDepartmentRequest(url));
             offerRequests.add(crawler.getDepartmentOfferingsForDepartmentRequest(url));
+        }
+
+        for (String timetableUrl : crawler.timetableDepartmentUrls) {
+            meetingSectionRequests.add(crawler.getMeetingSectionRequest(timetableUrl));
         }
 
         crawler.requestCount.set(instructorRequests.size()

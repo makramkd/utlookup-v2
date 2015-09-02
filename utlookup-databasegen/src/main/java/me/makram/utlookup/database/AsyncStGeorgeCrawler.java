@@ -7,6 +7,7 @@ package me.makram.utlookup.database;
 
 import com.squareup.okhttp.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -54,6 +55,10 @@ public class AsyncStGeorgeCrawler {
             ENROLMENT_INDICATOR = 8,
             ENROLMENT_CTRL = 9;
     private static final String EMPTY_CELL = "<font size=\"-1\">&nbsp;</font>";
+
+    public static final File cacheDirectory = new File("/cache");
+    public static final int cacheSize = 10 * 1024 * 1024;
+
     public static final String UNMODIFIED_INDENTED = "unmodifiedindented";
     public static final String ASYNC_ST_GEORGE_CRAWLER = "AsyncStGeorgeCrawler";
     public static final String EXCLUSION_CLASS = "exclusion";
@@ -79,6 +84,7 @@ public class AsyncStGeorgeCrawler {
     public List<Instructor> instructorList;
     public List<MeetingSection> meetingSectionList;
     public Set<String> courseUrls;
+    public Set<String> timetableDepartmentUrls;
 
     public AtomicInteger requestCount;
 
@@ -279,6 +285,76 @@ public class AsyncStGeorgeCrawler {
         }
     };
 
+    public final Callback meetingSectionsCallback = new Callback() {
+        @Override
+        public void onFailure(Request request, IOException e) {
+            Logger.getLogger(ASYNC_ST_GEORGE_CRAWLER).log(Level.SEVERE,
+                    "Meeting Section request failed");
+        }
+
+        @Override
+        public void onResponse(Response response) throws IOException {
+            Document document = Jsoup.parse(response.body().string());
+
+            // get the table rows
+            final Elements rows = document.getElementsByTag("tr");
+
+            // the table has 10 columns, so the indices of the children of the tr will be from 0 to 9
+            // except for the first row, because it is only the title of the table. For this reason
+            // we start the loop at index 2 of the rows list.
+            final int size = rows.size();
+
+            List<MeetingSection> meetingSections = new ArrayList<>();
+            // the table contains rows that have no information in one (or more) of the following cols:
+            // Course, section code, title, location, instructor, and so on
+            // however, all we are concerned with is the course column.
+            Element majorRow = null;
+            String currentCourseCode = "";
+            for (int i = 2; i < size; ++i) {
+                Element currentRow = rows.get(i);
+                if (currentRow.children().size() != 10) {
+                    continue;
+                }
+                if (!currentRow.child(0).html().equals(EMPTY_CELL)) {
+                    majorRow = currentRow;
+                    currentCourseCode = majorRow.child(COURSE_CODE).text();
+                }
+                // index 0: course code, 1: section code, 2: title, 3: meeting section, 4: wait list (yes or no)
+                // 5: time, 6: location, 7: instructor, 8: enrolment indicator, 9: enrolment controls (useless)
+
+                final String courseCode = currentRow.child(COURSE_CODE).text(); // could be equal to EMPTY_CELL
+                final String sectionCode = currentRow.child(SECTION_CODE).text(); // could be equal to EMPTY_CELL
+                final String title = currentRow.child(TITLE).text(); // could be equal to EMPTY_CELL (not reliable to be the name of the course)
+                final String meetingSection = currentRow.child(MEETING_SECTION).text(); // never empty
+                final String waitlist = currentRow.child(WAITLIST).text(); // never empty
+                final String time = currentRow.child(TIME).text(); // never empty
+                final String loc = currentRow.child(LOCATION).text(); // could be equal to EMPTY_CELL
+                final String instructor = currentRow.child(INSTRUCTOR).text(); // could be equal to EMPTY_CELL
+                final String enindicator = currentRow.child(ENROLMENT_INDICATOR).text(); // could be equal to EMPTY_CELL (not sure if this property is inherited)
+                try {
+                    final String enctrl = currentRow.child(ENROLMENT_CTRL).text(); // could be equal to EMPTY_CELL (not sure if this property is inherited)
+                } catch (IndexOutOfBoundsException e) {
+                    System.err.println("Size of rows: " + currentRow.children().size());
+                    System.err.println("At the index: " + ENROLMENT_CTRL);
+                }
+
+                MeetingSection section = new MeetingSection(currentCourseCode,
+                        meetingSection);
+                section.hasWaitingList = waitlist;
+                section.location = loc;
+                section.time.add(time);
+                section.instructor = instructor;
+                section.enrolmentIndicator = enindicator;
+
+                meetingSections.add(section);
+            }
+
+            addToMeetingSectionList(meetingSections);
+
+            requestCount.getAndDecrement();
+        }
+    };
+
     public AsyncStGeorgeCrawler() {
         courseList = new TreeSet<>();
         departmentList = new TreeSet<>();
@@ -287,7 +363,10 @@ public class AsyncStGeorgeCrawler {
         instructorList = new ArrayList<>();
         meetingSectionList = new ArrayList<>();
         courseUrls = new TreeSet<>();
+        timetableDepartmentUrls = new TreeSet<>();
         requestCount = new AtomicInteger();
+
+        client.setCache(new Cache(cacheDirectory, cacheSize));
     }
 
     public OkHttpClient getClient() {
@@ -455,6 +534,22 @@ public class AsyncStGeorgeCrawler {
     public Request getDepartmentsRequest() {
         Request request = new Request.Builder()
                 .url(StGeorgeCrawler.CALENDAR_URL)
+                .build();
+
+        return request;
+    }
+
+    public Request getMeetingSectionRequest(String timetableDirectLink) {
+        Request request = new Request.Builder()
+                .url(timetableDirectLink)
+                .build();
+
+        return request;
+    }
+
+    public Request getDepartmentTimetableUrlsRequest() {
+        Request request = new Request.Builder()
+                .url(TIMETABLE_URL_FW)
                 .build();
 
         return request;
