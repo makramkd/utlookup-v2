@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author admin
  */
 public class Main {
@@ -86,6 +85,9 @@ public class Main {
             // find the links in the page: these are direct descendants of <li> elements
             Elements departmentLinks = document1.select("li > a");
             for (Element e : departmentLinks) {
+                if (e.attr("href").contains("daniels") || e.attr("href").contains("engineering")) {
+                    continue;
+                }
                 crawler.timetableDepartmentUrls.add(StGeorgeCrawler.TIMETABLE_URL_FW + e.attr("href"));
             }
 
@@ -131,6 +133,11 @@ public class Main {
                     .enqueue(crawler.offersPerDepartmentCallback);
         }
 
+        for (Request request : meetingSectionRequests) {
+            crawler.getClient()
+                    .newCall(request)
+                    .enqueue(crawler.meetingSectionsCallback);
+        }
         crawler.getClient()
                 .newCall(departmentRequest)
                 .enqueue(crawler.departmentsCallback);

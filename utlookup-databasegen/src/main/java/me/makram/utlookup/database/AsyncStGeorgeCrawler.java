@@ -316,10 +316,6 @@ public class AsyncStGeorgeCrawler {
             String currentCourseCode = "";
             for (int i = 2; i < size; ++i) {
                 Element currentRow = rows.get(i);
-                if (currentRow.children().size() != 10) {
-                    continue;
-                }
-
                 if (!currentRow.child(0).html().equals(EMPTY_CELL)) {
                     majorRow = currentRow;
                     currentCourseCode = majorRow.child(COURSE_CODE).text();
@@ -328,10 +324,14 @@ public class AsyncStGeorgeCrawler {
                     isMajorRow = false;
                 }
 
-                if (currentRow.child(MEETING_SECTION).html().equals(EMPTY_CELL)) {
-                    isPreviousMeetingSection = true;
-                } else {
-                    isPreviousMeetingSection = false;
+                try {
+                    if (currentRow.child(MEETING_SECTION).html().equals(EMPTY_CELL)) {
+                        isPreviousMeetingSection = true;
+                    } else {
+                        isPreviousMeetingSection = false;
+                    }
+                } catch (Exception e) {
+                    // swallow
                 }
 
                 // index 0: course code, 1: section code, 2: title, 3: meeting section, 4: wait list (yes or no)
@@ -354,7 +354,7 @@ public class AsyncStGeorgeCrawler {
                 }
 
                 final String ccCode = currentCourseCode;
-                MeetingSection ms = null;
+                MeetingSection ms;
                 if (isPreviousMeetingSection) {
                     ms = Iterables.find(meetingSections, new Predicate<MeetingSection>() {
                         @Override
@@ -364,6 +364,10 @@ public class AsyncStGeorgeCrawler {
                     });
 
                     ms.time.add(time);
+
+                    if (!loc.replaceAll("\\s", "").isEmpty()) {
+                        ms.location += loc;
+                    }
                 } else {
                     ms = new MeetingSection(currentCourseCode,
                             meetingSection);
