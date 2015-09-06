@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author admin
@@ -25,41 +26,12 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-//        DatabaseHelper.DATABASE_VERSION = 3;
-//        DatabaseHelper instance = DatabaseHelper.instance();
-//        boolean init = instance.isInitialized();
-//        System.out.println("Database is initialized ? " + init);
-//
-//        StGeorgeCrawler crawler = new StGeorgeCrawler(
-//                StGeorgeCrawler.CALENDAR_URL);
-//
-//        List<Department> departmentList = crawler.getDepartmentList();
-//        int[] depsInserted = instance.insertDepartments(departmentList);
-//        System.out.println("Inserted " + depsInserted.length +
-//                " department tuples into the database");
-//
-//        List<Instructor> instructorList = crawler.getInstructorList();
-//        int[] insertions = instance.insertInstructors(instructorList);
-//        System.out.println("Inserted " + insertions.length +
-//                " instructor tuples to the " +
-//                "database");
-//
-//        List<DepartmentOffering> depOfferingList =
-//                crawler.getDepartmentOfferings();
-//        int[] depOffersInserted =
-//                instance.insertDepartmentOfferings(depOfferingList);
-//        System.out.println("Inserted " + depOffersInserted.length +
-//                " department offer tuples into the database.");
-//
-//        List<Course> courseList =
-//                crawler.getCourseList();
-//        int[] coursesInserted =
-//                instance.insertCourses(courseList);
-//        System.out.println("Inserted " + coursesInserted.length +
-//                " course tuples into the database.");
+        DatabaseHelper.DATABASE_VERSION = 4;
+        DatabaseHelper instance = DatabaseHelper.instance();
+        boolean init = instance.isInitialized();
+        System.out.println("Database is initialized ? " + init);
 
         AsyncStGeorgeCrawler crawler = new AsyncStGeorgeCrawler();
-        String testUrl = "http://www.artsandscience.utoronto.ca/ofr/calendar/crs_abs.htm";
 
         try {
             Response response = crawler.getClient()
@@ -99,7 +71,7 @@ public class Main {
         List<Request> courseRequests = new ArrayList<>();
         List<Request> offerRequests = new ArrayList<>();
         Request departmentRequest = crawler.getDepartmentsRequest();
-        List<Request> meetingSectionRequests = new ArrayList<>();
+//        List<Request> meetingSectionRequests = new ArrayList<>();
 
         for (String url : crawler.courseUrls) {
             instructorRequests.add(crawler.getInstructorListForDepartmentRequest(url));
@@ -107,9 +79,9 @@ public class Main {
             offerRequests.add(crawler.getDepartmentOfferingsForDepartmentRequest(url));
         }
 
-        for (String timetableUrl : crawler.timetableDepartmentUrls) {
-            meetingSectionRequests.add(crawler.getMeetingSectionRequest(timetableUrl));
-        }
+//        for (String timetableUrl : crawler.timetableDepartmentUrls) {
+//            meetingSectionRequests.add(crawler.getMeetingSectionRequest(timetableUrl));
+//        }
 
         crawler.requestCount.set(instructorRequests.size()
                 + courseRequests.size() +
@@ -133,11 +105,11 @@ public class Main {
                     .enqueue(crawler.offersPerDepartmentCallback);
         }
 
-        for (Request request : meetingSectionRequests) {
-            crawler.getClient()
-                    .newCall(request)
-                    .enqueue(crawler.meetingSectionsCallback);
-        }
+//        for (Request request : meetingSectionRequests) {
+//            crawler.getClient()
+//                    .newCall(request)
+//                    .enqueue(crawler.meetingSectionsCallback);
+//        }
         crawler.getClient()
                 .newCall(departmentRequest)
                 .enqueue(crawler.departmentsCallback);
@@ -145,6 +117,29 @@ public class Main {
         while (crawler.requestCount.get() != 0) {
             continue;
         }
+
+        Set<Department> departmentList = crawler.departmentList;
+        int[] depsInserted = instance.insertDepartments(departmentList);
+
+        List<Instructor> instructorList = crawler.instructorList;
+        int[] insertions = instance.insertInstructors(instructorList);
+        System.out.println("Inserted " + insertions.length +
+                " instructor tuples to the " +
+                "database");
+
+        List<DepartmentOffering> depOfferingList =
+                crawler.departmentOfferingList;
+        int[] depOffersInserted =
+                instance.insertDepartmentOfferings(depOfferingList);
+        System.out.println("Inserted " + depOffersInserted.length +
+                " department offer tuples into the database.");
+
+        Set<Course> courseList =
+                crawler.courseList;
+        int[] coursesInserted =
+                instance.insertCourses(courseList);
+        System.out.println("Inserted " + coursesInserted.length +
+                " course tuples into the database.");
     }
 
     public static String readFile(String path, Charset encoding)
