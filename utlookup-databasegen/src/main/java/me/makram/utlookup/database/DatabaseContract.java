@@ -61,7 +61,7 @@ public class DatabaseContract {
                 COREQS_COL4 + TEXT_TYPE + COMMA_SEP +
                 EXCLUSIONS_COL5 + TEXT_TYPE + COMMA_SEP +
                 DESCRIPTION_COL6 + TEXT_TYPE + NOT_NULL + COMMA_SEP +
-                BRDR_COL7 + TEXT_TYPE + COMMA_SEP +
+                BRDR_COL7 + TEXT_TYPE + NOT_NULL + COMMA_SEP +
                 RECPREP_COL8 + TEXT_TYPE + ");";
 
         public static final String DELETE_TABLE = "drop table if exists " + TABLE_NAME + ";";
