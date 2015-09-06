@@ -12,7 +12,7 @@ create table course(
     coreqs text,
     exclusions text,
     description text not null,
-    brdr text,
+    brdr text not null,
     recPrep text
 );
 

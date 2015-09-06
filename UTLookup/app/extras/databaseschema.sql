@@ -5,25 +5,25 @@
 -- have to worry about any conflicts.
 
 create table course(
-    _id integer primary key,
+    _id integer primary key autoincrement,
     code text unique not null,
     name text not null,
     prereqs text,
     coreqs text,
     exclusions text,
     description text not null,
-    brdr text,
+    brdr text not null,
     recPrep text
 );
 
 create table department(
-    _id integer primary key,
+    _id integer primary key autoincrement,
     code text unique not null,
     name text not null
 );
 
 create table offers(
-    _id integer primary key,
+    _id integer primary key autoincrement,
     deptCode text not null,
     courseCode text not null,
     unique(deptCode, courseCode) on conflict replace,
@@ -32,14 +32,14 @@ create table offers(
 );
 
 create table instructor(
-    _id integer primary key,
+    _id integer primary key autoincrement,
     name text not null,
     deptCode text not null,
     foreign key(deptCode) references department(code)
 );
 
 create table depthead(
-    _id integer primary key,
+    _id integer primary key autoincrement,
     deptCode text not null,
     profId integer not null,
     unique(deptCode, profId) on conflict replace,
@@ -48,7 +48,7 @@ create table depthead(
 );
 
 create table meetingsection(
-    _id integer primary key,
+    _id integer primary key autoincrement,
     courseCode text not null,
     sectionCode text not null,
     location text,
@@ -58,7 +58,7 @@ create table meetingsection(
 );
 
 create table teaches(
-    _id integer primary key,
+    _id integer primary key autoincrement,
     profId integer not null,
     courseCode text not null,
     sectionCode text not null,
