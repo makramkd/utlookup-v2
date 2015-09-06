@@ -136,9 +136,9 @@ public class AsyncStGeorgeCrawler {
                     }
                 }
                 int count = requestCount.decrementAndGet();
-                if (count == 0) {
-                    context.hideProgress();
-                }
+//                if (count == 0) {
+//                    context.hideProgress();
+//                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -180,9 +180,9 @@ public class AsyncStGeorgeCrawler {
                     }
                 }.start();
                 int count = requestCount.decrementAndGet();
-                if (count == 0) {
-                    context.hideProgress();
-                }
+//                if (count == 0) {
+//                    context.hideProgress();
+//                }
 //                Document document = Jsoup.parse(response);
 //                final Elements profObjects = document.getElementsByClass(UNMODIFIED_INDENTED);
 //
