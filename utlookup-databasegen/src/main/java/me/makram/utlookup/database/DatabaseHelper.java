@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -82,7 +83,7 @@ public class DatabaseHelper {
         return initialized;
     }
     
-    public int[] insertInstructors(List<Instructor> instructors) {
+    public int[] insertInstructors(Collection<Instructor> instructors) {
         int[] batchResult = null;
         try {
             String query = "insert into instructor (name, deptCode) values (?, ?);";
@@ -103,16 +104,20 @@ public class DatabaseHelper {
         return batchResult;
     }
     
-    public int[] insertCourses(List<Course> courses) {
+    public int[] insertCourses(Collection<Course> courses) {
         int[] batchResult = null;
         try {
-            String query = "insert into course (code, name, description) values (?, ?, ?)";
+            String query = "insert into course (code, name, prereqs, coreqs, exclusions, description, brdr, recPrep) values (?, ?, ?, ?, ?, ?, ?, ?)";
             preparedStatement = dbConnection.prepareStatement(query);
             for (Course c : courses) {
                 preparedStatement.setString(1, c.courseCode);
                 preparedStatement.setString(2, c.courseName);
-                preparedStatement.setString(3, c.courseDescription == null ?
-                        "" : c.courseDescription);
+                preparedStatement.setString(3, c.prerequisites);
+                preparedStatement.setString(4, c.corequisites);
+                preparedStatement.setString(5, c.exclusions);
+                preparedStatement.setString(6, c.courseDescription);
+                preparedStatement.setString(7, "BR=" + c.breadthRequirement + ", DR=" + c.distributionRequirement);
+                preparedStatement.setString(8, c.recommendedPreparation);
                 preparedStatement.addBatch();
             }
             
@@ -126,7 +131,7 @@ public class DatabaseHelper {
         return batchResult;
     }
     
-    public int[] insertDepartments(List<Department> departments) {
+    public int[] insertDepartments(Collection<Department> departments) {
         int[] batchResult = null;
         try {
             String query = "insert into department (code, name) values (?, ?)";
@@ -147,7 +152,7 @@ public class DatabaseHelper {
         return batchResult;
     }
     
-    public int[] insertDepartmentOfferings(List<DepartmentOffering> departmentOfferings) {
+    public int[] insertDepartmentOfferings(Collection<DepartmentOffering> departmentOfferings) {
         int[] batchResult = null;
         try {
             String query = "insert into offers (deptCode, courseCode) values (?, ?)";
@@ -167,7 +172,7 @@ public class DatabaseHelper {
         return batchResult;
     }
     
-    public int[] insertDeptHeads(List<DeptHead> deptHeads) {
+    public int[] insertDeptHeads(Collection<DeptHead> deptHeads) {
         int[] batchResult = null;
         try {
             String query = "insert into depthead (deptCode, profId) values (?, ?)";
@@ -187,7 +192,7 @@ public class DatabaseHelper {
         return batchResult;
     }
     
-    public int[] insertMeetingSections(List<MeetingSection> meetingSections) {
+    public int[] insertMeetingSections(Collection<MeetingSection> meetingSections) {
         int[] batchResult = null;
         try {
             String query = "insert into meetingsection (courseCode, sectionCode) values (?, ?)";
