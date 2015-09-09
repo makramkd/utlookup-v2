@@ -1,4 +1,4 @@
-package org.lag.utlookup.back;
+package org.lag.courselookup.back;
 
 import org.junit.After;
 import org.junit.Before;
@@ -6,8 +6,6 @@ import org.junit.Test;
 
 import java.util.List;
 import java.util.Set;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by admin on 8/29/15.

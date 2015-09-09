@@ -1,4 +1,4 @@
-package org.lag.utlookup.back;
+package org.lag.courselookup.back;
 
 import java.util.ArrayList;
 import java.util.HashMap;

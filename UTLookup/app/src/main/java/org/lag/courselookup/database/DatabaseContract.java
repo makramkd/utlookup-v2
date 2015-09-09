@@ -1,4 +1,4 @@
-package org.lag.utlookup.database;
+package org.lag.courselookup.database;
 
 import android.provider.BaseColumns;
 

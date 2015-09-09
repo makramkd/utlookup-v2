@@ -1,24 +1,21 @@
-package org.lag.utlookup;
+package org.lag.courselookup;
 
 import android.app.Activity;
-import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ChooseCampusActivity extends Activity {
@@ -28,8 +25,7 @@ public class ChooseCampusActivity extends Activity {
      */
     private static final String DB_URL =
             "https://www.dropbox.com/s/njrwxlu6qq5btbt/courseDatabase4.db?dl=0";
-    private final String DL_DIR =
-            this.getFilesDir().getAbsolutePath() + "/courseDatabase.db";
+    private String DL_DIR;
 
     private ProgressDialog progressDialog;
 
@@ -39,10 +35,19 @@ public class ChooseCampusActivity extends Activity {
         setContentView(R.layout.activity_choose_campus);
 
         progressDialog = new ProgressDialog(this);
+        DL_DIR = this.getFilesDir().getAbsolutePath() + "db/courseDatabase.db";
     }
 
     public void updateButtonClicked(View view) {
         new DownloadDatabase(this).execute(DB_URL);
+
+        File directory = getFilesDir();
+        String[] subFiles = directory.list();
+        if (subFiles != null) {
+            for (String file : subFiles) {
+                Log.d("CCA", file);
+            }
+        }
     }
 
     class DownloadDatabase extends AsyncTask<String, Integer, String> {
@@ -101,7 +106,7 @@ public class ChooseCampusActivity extends Activity {
                 int fileLength = connection.getContentLength();
 
                 input = connection.getInputStream();
-                output = new FileOutputStream(DL_DIR);
+                output = new FileOutputStream("courseDatabase.db");
 
                 byte[] data = new byte[4096];
                 long total = 0;

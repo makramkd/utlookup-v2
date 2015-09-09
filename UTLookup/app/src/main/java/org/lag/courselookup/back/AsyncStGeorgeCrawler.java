@@ -1,6 +1,5 @@
-package org.lag.utlookup.back;
+package org.lag.courselookup.back;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -12,7 +11,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.lag.utlookup.ChooseCampusActivity;
+import org.lag.courselookup.ChooseCampusActivity;
 
 import java.util.ArrayList;
 import java.util.List;

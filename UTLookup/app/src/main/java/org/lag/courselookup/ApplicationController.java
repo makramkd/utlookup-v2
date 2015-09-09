@@ -1,4 +1,4 @@
-package org.lag.utlookup;
+package org.lag.courselookup;
 
 import android.app.Application;
 import android.text.TextUtils;

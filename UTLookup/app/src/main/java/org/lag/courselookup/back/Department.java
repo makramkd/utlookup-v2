@@ -1,4 +1,4 @@
-package org.lag.utlookup.back;
+package org.lag.courselookup.back;
 
 /**
  * The Department class/entity will be used to encapsulate

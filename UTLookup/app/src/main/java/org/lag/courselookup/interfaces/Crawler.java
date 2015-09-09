@@ -1,10 +1,10 @@
-package org.lag.utlookup.interfaces;
+package org.lag.courselookup.interfaces;
 
 import java.io.IOException;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.lag.utlookup.back.StGeorgeCrawler;
+import org.lag.courselookup.back.StGeorgeCrawler;
 
 /**
  * Crawler base class that contains functionality that will be used in all it's subclasses.

@@ -1,6 +1,4 @@
-package org.lag.utlookup.back;
-
-import org.lag.utlookup.database.DatabaseContract;
+package org.lag.courselookup.back;
 
 /**
  * Created by admin on 8/27/15.

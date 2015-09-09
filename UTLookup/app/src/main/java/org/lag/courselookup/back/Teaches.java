@@ -1,4 +1,4 @@
-package org.lag.utlookup.back;
+package org.lag.courselookup.back;
 
 /**
  * Created by admin on 8/28/15.

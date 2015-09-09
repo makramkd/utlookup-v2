@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
-package org.lag.utlookup.interfaces;
+package org.lag.courselookup.interfaces;
 
-import org.lag.utlookup.back.Course;
-import org.lag.utlookup.back.Department;
+import org.lag.courselookup.back.Course;
+import org.lag.courselookup.back.Department;
 
 import java.util.List;
 import java.util.Set;

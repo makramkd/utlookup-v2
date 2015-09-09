@@ -1,14 +1,13 @@
-package org.lag.utlookup.database;
+package org.lag.courselookup.database;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.lag.utlookup.back.Course;
+import org.lag.courselookup.back.Course;
 
 /**
  * Created by admin on 8/26/15.
