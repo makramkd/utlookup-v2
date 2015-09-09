@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.squareup.okhttp.OkHttpClient;
 
 /**
  * Created by admin on 8/30/15.
@@ -18,6 +19,7 @@ public class ApplicationController extends Application {
      * The volley request queue we will use to make async HTTP requests.
      */
     RequestQueue requestQueue;
+    OkHttpClient client;
 
     private static ApplicationController instance;
 
@@ -26,6 +28,7 @@ public class ApplicationController extends Application {
 
         instance = this;
         requestQueue = Volley.newRequestQueue(getApplicationContext());
+        client = new OkHttpClient();
     }
 
     /**
@@ -63,5 +66,9 @@ public class ApplicationController extends Application {
      */
     public void cancelPendingRequests(Object tag) {
         requestQueue.cancelAll(tag);
+    }
+
+    public OkHttpClient getClient() {
+        return client;
     }
 }

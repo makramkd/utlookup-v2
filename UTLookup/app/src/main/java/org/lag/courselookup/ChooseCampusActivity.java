@@ -10,6 +10,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -70,17 +73,10 @@ public class ChooseCampusActivity extends Activity {
         }
 
         @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-            progressDialog.setIndeterminate(false);
-            progressDialog.setMax(100);
-            progressDialog.setProgress(values[0]);
-        }
-
-        @Override
         protected void onPostExecute(String result) {
             wakeLock.release();
             progressDialog.dismiss();
+
             if (result != null) {
                 Toast.makeText(context, "Download error: " + result, Toast.LENGTH_SHORT).show();
             } else {
@@ -92,38 +88,24 @@ public class ChooseCampusActivity extends Activity {
         protected String doInBackground(String... strings) {
             InputStream input = null;
             OutputStream output = null;
-            HttpURLConnection connection = null;
             try {
-                URL url = new URL(strings[0]);
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
+                Request request = new Request.Builder()
+                        .url(DB_URL)
+                        .build();
+                Response response = ((ApplicationController) getApplication()).getClient()
+                        .newCall(request).execute();
 
-                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    return "Server returned HTTP " + connection.getResponseCode() +
-                            " " + connection.getResponseMessage();
-                }
-
-                int fileLength = connection.getContentLength();
-
-                input = connection.getInputStream();
-                output = new FileOutputStream("courseDatabase.db");
+                input = response.body().byteStream();
+                output = openFileOutput("courseDatabase.db", MODE_PRIVATE);
 
                 byte[] data = new byte[4096];
-                long total = 0;
                 int count;
                 while ((count = input.read(data)) != -1) {
-                    // allow canceling
-                    if (isCancelled()) {
-                        input.close();
-                        return null;
-                    }
-                    total += count;
-                    if (fileLength > 0) // only if total length is known
-                        publishProgress((int) (total * 100 / fileLength));
                     output.write(data, 0, count);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e("CCA", "Exception in doInBackground of DownloadDatabaseTask : "
+                        + e.getMessage());
             } finally {
                 try {
                     if (output != null) {
@@ -134,10 +116,6 @@ public class ChooseCampusActivity extends Activity {
                     }
                 } catch (IOException ioe) {
                     // ignore
-                }
-
-                if (connection != null) {
-                    connection.disconnect();
                 }
             }
 
