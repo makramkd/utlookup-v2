@@ -27,7 +27,7 @@ public class ChooseCampusActivity extends Activity {
      * The URL to the database file we will use.
      */
     private static final String DB_URL =
-            "https://www.dropbox.com/s/njrwxlu6qq5btbt/courseDatabase4.db?dl=0";
+            "***";
     private String DL_DIR;
 
     private ProgressDialog progressDialog;
